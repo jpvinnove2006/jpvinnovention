@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manila Tambayan — Order via WhatsApp · Johor Bahru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#1C1410;
+    --char-2:#241A14;
+    --paper:#E8DCC8;
+    --paper-dim:#D8CAAE;
+    --annatto:#C44524;
+    --annatto-deep:#9C3219;
+    --leaf:#7A8B5E;
+    --ember:#F2A33D;
+    --line: rgba(232,220,200,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
+  body{
+    background:var(--char);
+    color:var(--paper);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    width:100%;
+  }
+  ::selection{background:var(--annatto); color:var(--paper);}
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'Space Mono', monospace;}
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px;
+    padding-top:max(14px, env(safe-area-inset-top));
+    background:linear-gradient(to bottom, rgba(28,20,16,0.95), rgba(28,20,16,0));
+    pointer-events:none;
+    width:100%;
+    overflow:hidden;
+  }
+  .topbar > *{pointer-events:auto;}
+  .brandmark{
+    display:flex; align-items:center; gap:8px;
+    font-family:'Fraunces', serif; font-weight:700; font-size:0.95rem;
+    letter-spacing:0.01em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    min-width:0; flex-shrink:1;
+  }
+  .brandmark .dot{
+    width:8px; height:8px; border-radius:50%; flex-shrink:0;
+    background:var(--ember);
+    box-shadow:0 0 10px 2px rgba(242,163,61,0.7);
+  }
+  .cart-pill{
+    display:flex; align-items:center; gap:7px;
+    background:var(--paper); color:var(--char);
+    border-radius:999px; padding:8px 12px 8px 12px;
+    font-family:'Space Mono', monospace; font-size:0.78rem; font-weight:700;
+    cursor:pointer; border:none;
+    transition:transform 0.15s ease;
+    flex-shrink:0; white-space:nowrap;
+  }
+  .cart-pill:hover{transform:translateY(-1px);}
+  .cart-pill .count{
+    background:var(--annatto); color:var(--paper);
+    width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.68rem;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding: 120px 24px 64px;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(196,69,36,0.35), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 30% 85%, rgba(242,163,61,0.18), transparent 70%),
+      var(--char);
+  }
+  .grain{
+    position:absolute; inset:0; pointer-events:none; opacity:0.06; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .ember-field{position:absolute; inset:0; pointer-events:none;}
+  .ember-field span{
+    position:absolute; bottom:-10px;
+    width:4px; height:4px; border-radius:50%;
+    background:var(--ember);
+    box-shadow:0 0 8px 2px rgba(242,163,61,0.9);
+    animation:rise linear infinite;
+    opacity:0;
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0); opacity:0;}
+    10%{opacity:1;}
+    90%{opacity:0.5;}
+    100%{transform:translateY(-90vh) translateX(var(--drift, 20px)); opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ember-field{display:none;}
+  }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ember);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    position:relative; z-index:2;
+  }
+  .hero h1{
+    position:relative; z-index:2;
+    font-size:clamp(2.6rem, 9vw, 4.6rem);
+    line-height:0.98;
+    color:#ffdea7;
+    max-width:13ch;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--annatto);
+    /*-webkit-text-stroke: 0.5px var(--ember);*/
+  }
+  .hero .sub{
+    position:relative; z-index:2;
+    margin-top:20px;
+    font-size:1.05rem;
+    line-height:1.5;
+    color:var(--paper-dim);
+    max-width:38ch;
+  }
+  .hero .actions{
+    position:relative; z-index:2;
+    display:flex; gap:12px; flex-wrap:wrap;
+    margin-top:32px;
+  }
+  .btn{
+    font-family:'Space Mono', monospace;
+    font-size:0.85rem; font-weight:700;
+    /*padding:14px 22px;*/
+    padding: 8px 8px;
+    border-radius:8px;
+    border:1.5px solid transparent;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+  .btn-primary{background:var(--annatto); color:var(--paper);}
+  .btn-primary:hover{transform:translateY(-2px); background:var(--annatto-deep);}
+  /*.btn-ghost{border-color:rgba(232,220,200,0.3); color:var(--paper);}*/
+  .btn-ghost {color: #c44524;background: #e8dcc8;}
+  .btn-ghost:hover{border-color:var(--paper); transform:translateY(-2px);}
+
+  .hero-meta{
+    position:relative; z-index:2;
+    display:flex; gap:28px; flex-wrap:wrap;
+    margin-top:44px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-family:'Space Mono', monospace;
+    font-size:0.78rem;
+    color:var(--paper-dim);
+  }
+  .hero-meta b{color:var(--ember); display:block; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px; font-weight:700;}
+
+  /* ---------- Section shell ---------- */
+  section{padding:88px 24px; position:relative;}
+  .section-head{max-width:640px; margin:0 auto 48px;}
+  .section-head .eyebrow{margin-bottom:12px;}
+  .section-head h2{font-size:clamp(1.9rem, 4vw, 2.6rem); color:var(--paper);}
+  .section-head p{color:var(--paper-dim); margin-top:12px; line-height:1.6; max-width:48ch;}
+
+  /* ---------- Menu — Card Grid ---------- */
+  .menu{background:var(--char-2);}
+  .menu-wrap{max-width:1040px; margin:0 auto;}
+  .menu-group{margin-bottom:56px;}
+  .menu-group-title{
+    display:flex; align-items:baseline; gap:14px;
+    margin-bottom:22px;
+  }
+  .menu-group-title h3{font-size:1.3rem; color:var(--ember); font-style:italic; white-space:nowrap;}
+  .menu-group-title .rule{flex:1; height:1px; background:var(--line);}
+  .menu-group-title .tag{font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.08em; white-space:nowrap;}
+
+  /* Card grid */
+  .menu-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+    gap:16px;
+  }
+  @media(max-width:480px){
+    .menu-cards{grid-template-columns:repeat(2,1fr); gap:12px;}
+  }
+
+  /* Individual card */
+  .menu-card{
+    background:var(--char);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    position:relative;
+    transition:border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    cursor:pointer;
+  }
+  .menu-card:hover{
+    border-color:rgba(232,220,200,0.3);
+    transform:translateY(-3px);
+    box-shadow:0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  /* Photo */
+  .menu-card-photo-wrap{
+    position:relative; width:100%; aspect-ratio:4/3; overflow:hidden;
+    background:var(--char-2); flex-shrink:0;
+  }
+  .menu-card-photo{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform 0.35s ease;
+  }
+  .menu-card:hover .menu-card-photo{transform:scale(1.05);}
+  .menu-card-photo-fallback{
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:2rem; color:var(--paper-muted);
+    background:var(--char-2);
+  }
+
+  /* Spice badge overlaid on photo */
+  .menu-card-spice{
+    position:absolute; top:9px; left:9px;
+    font-size:1rem; line-height:1;
+    background:rgba(28,20,16,0.72); border-radius:6px;
+    padding:4px 6px;
+    backdrop-filter:blur(4px);
+  }
+
+  /* Body */
+  .menu-card-body{
+    padding:13px 14px 14px;
+    display:flex; flex-direction:column; gap:4px; flex:1;
+    background-color:#195710;
+  }
+  .menu-card-name{
+    font-family:'Fraunces',serif; font-weight:600; font-size:0.98rem;
+    color:var(--paper); line-height:1.2;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .menu-card-desc{
+    font-size:0.78rem; color:var(--paper-dim); line-height:1.45;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+    overflow:hidden; flex:1;
+  }
+
+  /* Footer: price + add control */
+  .menu-card-footer{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:12px; gap:8px;
+  }
+  .menu-card-price{
+    font-family:'Space Mono',monospace; font-size:0.9rem; font-weight:700;
+    color:var(--ember); flex-shrink:0;
+  }
+
+  /* Add button (when qty = 0) */
+  .card-add-btn{
+    width:32px; height:32px; border-radius:50%;
+    background:var(--annatto); border:none; color:var(--paper);
+    font-size:1.2rem; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    transition:background 0.15s, transform 0.15s;
+    box-shadow:0 2px 8px rgba(196,69,36,0.4);
+  }
+  .card-add-btn:hover{background:var(--annatto-deep); transform:scale(1.1);}
+
+  /* Qty stepper (when qty > 0) — replaces add btn */
+  .card-qty{
+    display:flex; align-items:center;
+    background:var(--annatto); border-radius:999px;
+    overflow:hidden; flex-shrink:0;
+    transition:all 0.2s ease;
+  }
+  .card-qty-btn{
+    width:28px; height:28px;
+    background:transparent; border:none; color:var(--paper);
+    font-family:'Space Mono',monospace; font-size:1rem;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background 0.13s;
+  }
+  .card-qty-btn:hover{background:rgba(0,0,0,0.2);}
+  .card-qty-num{
+    min-width:18px; text-align:center;
+    font-family:'Space Mono',monospace; font-size:0.8rem; font-weight:700;
+    color:var(--paper); padding:0 2px;
+  }
+
+  /* clickable cue on card (tap anywhere to open modal) */
+  .menu-card-clickable-area{
+    position:absolute; inset:0; z-index:1;
+  }
+  /* footer controls sit above the clickable overlay */
+  .menu-card-footer{position:relative; z-index:2;}
+
+  /* ---------- Why section ---------- */
+  .why{background:var(--char);}
+  .why-grid{
+    max-width:980px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .why-card{background:var(--char-2); padding:32px 26px;}
+  .why-card .glyph{
+    width:36px; height:36px; margin-bottom:18px;
+    color:var(--ember);
+  }
+  .why-card h3{font-size:1.1rem; color:var(--paper); margin-bottom:10px; font-weight:500;}
+  .why-card p{font-size:0.88rem; color:var(--paper-dim); line-height:1.55;}
+  @media (max-width:760px){
+    .why-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Location / hours ---------- */
+  .info{background:var(--char-2);}
+  .info-grid{
+    max-width:920px; margin:0 auto;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:48px;
+  }
+  .hours-table{font-family:'Space Mono', monospace; font-size:0.86rem;}
+  .hours-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); color:var(--paper-dim);}
+  .hours-row b{color:var(--paper); font-weight:400;}
+  .hours-row.today{color:var(--ember);}
+  .hours-row.today b{color:var(--ember);}
+  @media (max-width:760px){ .info-grid{grid-template-columns:1fr;} }
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:40px 24px; text-align:center;
+    border-top:1px solid var(--line);
+    font-family:'Space Mono', monospace; font-size:0.78rem; color:var(--paper-dim);
+  }
+
+  /* ---------- Sticky order tab (the signature element) ---------- */
+  .order-tab{
+    position:fixed; right:0; top:0; bottom:0;
+    width:100vw;
+    background:var(--paper);
+    color:var(--char);
+    z-index:100;
+    transform:translateX(100%);
+    transition:transform 0.32s cubic-bezier(.2,.9,.25,1);
+    display:flex; flex-direction:column;
+    box-shadow:-20px 0 60px rgba(0,0,0,0.5);
+    overflow:hidden;
+  }
+  @media(min-width:480px){
+    .order-tab{width:400px;}
+  }
+  .order-tab.open{transform:translateX(0);}
+  .order-tab-head{
+    padding:16px 16px 14px;
+    padding-top:max(16px, env(safe-area-inset-top, 16px));
+    border-bottom:2px dashed rgba(28,20,16,0.18);
+    display:flex; justify-content:space-between; align-items:flex-start;
+    flex-shrink:0;
+  }
+  .order-tab-head h3{font-family:'Fraunces', serif; font-size:1.2rem; font-weight:600;}
+  .order-tab-head .sub{font-family:'Space Mono',monospace; font-size:0.7rem; color:#6b5d4a; margin-top:4px;}
+  .tab-close{
+    background:rgba(28,20,16,0.08); border:none; cursor:pointer;
+    font-size:1.1rem; line-height:1; color:var(--char);
+    width:36px; height:36px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; touch-action:manipulation;
+  }
+  .order-tab-items{
+    flex:1; overflow-y:auto; overflow-x:hidden;
+    padding:12px 16px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .tab-line{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center; gap:10px;
+    padding:10px 0;
+    border-bottom:1px dotted rgba(28,20,16,0.18);
+    font-size:0.92rem;
+    overflow:hidden;
+    transition:max-height 0.28s ease, opacity 0.22s ease, padding 0.25s ease;
+    max-height:80px;
+  }
+  .tab-line.removing{
+    max-height:0; opacity:0; padding:0; border-bottom:none;
+  }
+  .tab-line .l-info{min-width:0;}
+  .tab-line .l-name{font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .tab-line .l-meta{font-family:'Space Mono',monospace; font-size:0.74rem; color:#6b5d4a; margin-top:2px;}
+  .tab-line .l-right{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .tab-line .l-price{font-family:'Space Mono',monospace; font-size:0.82rem; white-space:nowrap; color:var(--char);}
+  .tab-line .l-remove{
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(196,69,36,0.12); border:none;
+    color:#9c3219; font-size:0.75rem; line-height:1;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background 0.15s, color 0.15s;
+    flex-shrink:0;
+  }
+  .tab-line .l-remove:hover{background:var(--annatto); color:#fff;}
+
+  /* In-tab qty controls */
+  .tab-qty{
+    display:flex; align-items:center; gap:0;
+    background:rgba(28,20,16,0.07);
+    border:1px solid rgba(28,20,16,0.14);
+    border-radius:7px; overflow:hidden; flex-shrink:0;
+  }
+  .tab-qty-btn{
+    width:28px; height:28px;
+    background:transparent; border:none; color:var(--char);
+    font-family:'Space Mono',monospace; font-size:1rem; line-height:1;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background 0.13s;
+    flex-shrink:0;
+  }
+  .tab-qty-btn:hover{background:rgba(28,20,16,0.12);}
+  .tab-qty-btn.dec:hover{background:var(--annatto); color:#fff;}
+  .tab-qty-num{
+    width:24px; text-align:center;
+    font-family:'Space Mono',monospace; font-size:0.82rem;
+    font-weight:700; color:var(--char);
+    flex-shrink:0;
+  }
+
+  .tab-empty{
+    text-align:center; padding:60px 20px; color:#7d6f5b;
+    font-size:0.9rem; line-height:1.6;
+  }
+  .order-tab-foot{
+    padding:14px 16px;
+    padding-bottom:max(16px, env(safe-area-inset-bottom, 16px));
+    border-top:2px dashed rgba(28,20,16,0.18);
+    flex-shrink:0;
+    background:var(--paper);
+  }
+  .tab-total-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:12px;
+    font-family:'Fraunces', serif;
+  }
+  .tab-total-row .label{font-size:0.8rem; color:#6b5d4a; font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:0.06em;}
+  .tab-total-row .amount{font-size:1.4rem; font-weight:600;}
+  .wa-btn{
+    width:100%;
+    background:#1C1410; color:var(--paper);
+    border:none; border-radius:9px;
+    padding:13px 14px;
+    font-family:'Space Mono', monospace; font-size:0.78rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    cursor:pointer; text-align:center;
+    transition:background 0.15s ease, transform 0.15s ease;
+    touch-action:manipulation;
+    white-space:normal; word-break:break-word;
+    line-height:1.3;
+  }
+  .wa-btn:hover{background:var(--annatto); transform:translateY(-2px);}
+  .wa-btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+  .wa-btn svg{width:16px; height:16px; flex-shrink:0;}
+  .tab-hint{
+    font-size:0.7rem; color:#8a7c66; margin-top:8px; text-align:center; line-height:1.5;
+  }
+  .scrim{
+    position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    z-index:90; opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+  }
+  .scrim.open{opacity:1; pointer-events:auto;}
+
+  .floating-cta{
+    position:fixed;
+    bottom:max(22px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+    right:16px; z-index:60;
+    background:var(--annatto); color:var(--paper);
+    border:none; border-radius:999px;
+    padding:13px 16px;
+    font-family:'Space Mono',monospace; font-weight:700; font-size:0.8rem;
+    display:flex; align-items:center; gap:8px;
+    cursor:pointer; box-shadow:0 8px 24px rgba(196,69,36,0.45);
+    transform:translateY(120%); transition:transform 0.3s ease;
+    touch-action:manipulation;
+  }
+  .floating-cta.show{transform:translateY(0);}
+  .floating-cta .count{
+    background:var(--paper); color:var(--annatto);
+    width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:0.72rem;
+  }
+
+  @media (max-width:560px){
+    .hero{padding-top:80px;}
+    section{padding:56px 16px;}
+    .pay-btn span, .wa-only-btn span{font-size:0.72rem;}
+  }
+
+  /* ---------- Item modal ---------- */
+  .item-modal-wrap{
+    position:fixed; inset:0; z-index:200;
+    display:none; align-items:flex-end; justify-content:center;
+    pointer-events:none;
+  }
+  .item-modal-wrap.open{
+    display:flex;
+  }
+  @media(min-width:600px){
+    .item-modal-wrap{align-items:center;}
+  }
+  .item-modal-scrim{
+    position:fixed; inset:0; z-index:199;
+    background:rgba(0,0,0,0); pointer-events:none;
+    transition:background 0.3s ease, opacity 0.3s ease;
+    display:none;
+    opacity:0;
+  }
+  .item-modal-scrim.open{
+    display:block;
+    opacity:1;
+    background:rgba(0,0,0,0.72);
+    pointer-events:auto;
+  }
+  .item-modal{
+    position:relative; z-index:200;
+    width:100%; max-width:480px;
+    background:var(--char-2);
+    border-radius:20px 20px 0 0;
+    overflow:hidden;
+    transform:translateY(100%);
+    transition:transform 0.36s cubic-bezier(.2,.9,.25,1);
+    pointer-events:none;
+    max-height:92svh;
+    display:none; flex-direction:column;
+  }
+  @media(min-width:600px){
+    .item-modal{
+      border-radius:20px;
+      transform:translateY(20px) scale(0.96);
+      opacity:0;
+      transition:transform 0.3s cubic-bezier(.2,.9,.25,1), opacity 0.25s ease;
+      max-height:88svh;
+    }
+  }
+  .item-modal.open{
+    display:flex;
+    pointer-events:auto;
+    transform:translateY(0);
+    background-color:#195710;
+  }
+  @media(min-width:600px){
+    .item-modal.open{
+      transform:translateY(0) scale(1);
+      opacity:1;
+    }
+  }
+  .modal-drag-handle{
+    width:36px; height:4px; border-radius:2px;
+    background:rgba(232,220,200,0.2);
+    margin:12px auto 0;
+    flex-shrink:0;
+  }
+  @media(min-width:600px){.modal-drag-handle{display:none;}}
+  .modal-photo-wrap{
+    position:relative; flex-shrink:0;
+    width:100%; aspect-ratio:12/9;
+    overflow:hidden;
+  }
+  .modal-photo{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .modal-photo-fallback{
+    width:100%; height:100%;
+    background:var(--char);
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem;
+  }
+  .modal-close{
+    position:absolute; top:12px; right:12px;
+    width:32px; height:32px; border-radius:50%;
+    background:rgba(28,20,16,0.7); border:none;
+    color:var(--paper); font-size:1rem; line-height:1;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+    transition:background 0.15s ease;
+  }
+  .modal-close:hover{background:var(--annatto);}
+  .modal-body{
+    padding:22px 22px 0;
+    overflow-y:auto; flex:1;
+  }
+  .modal-tag{
+    font-family:'Space Mono', monospace; font-size:0.72rem;
+    color:var(--ember); text-transform:uppercase; letter-spacing:0.1em;
+    margin-bottom:8px;
+  }
+  .modal-name{
+    font-family:'Fraunces', serif; font-size:1.6rem; font-weight:600;
+    color:var(--paper); line-height:1.1;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .modal-desc{
+    margin-top:12px; font-size:0.95rem; color:var(--paper-dim); line-height:1.65;
+  }
+  .modal-footer{
+    padding:18px 22px 28px;
+    display:flex; align-items:center; gap:14px;
+    border-top:1px solid var(--line);
+    margin-top:20px;
+    flex-shrink:0;
+  }
+  .modal-price{
+    font-family:'Fraunces', serif; font-size:1.4rem; font-weight:600;
+    color:var(--ember); white-space:nowrap;
+  }
+  .modal-qty{
+    display:flex; align-items:center; gap:0;
+    background:rgba(232,220,200,0.08);
+    border:1px solid var(--line);
+    border-radius:8px; overflow:hidden;
+    flex-shrink:0;
+  }
+  .modal-qty-btn{
+    width:34px; height:34px;
+    background:transparent; border:none; color:var(--paper);
+    font-family:'Space Mono', monospace; font-size:1.1rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.15s ease;
+  }
+  .modal-qty-btn:hover{background:rgba(232,220,200,0.12);}
+  .modal-qty-num{
+    width:30px; text-align:center;
+    font-family:'Space Mono', monospace; font-size:0.95rem; color:var(--paper);
+  }
+  .modal-add-btn{
+    flex:1;
+    background:var(--annatto); color:var(--paper);
+    border:none; border-radius:9px;
+    /*padding:13px 16px;*/
+    padding: 8px 14px;
+    font-family:'Space Mono', monospace; font-size:0.85rem; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:background 0.15s ease, transform 0.15s ease;
+    white-space:nowrap;
+  }
+  .modal-add-btn:hover{background:var(--annatto-deep); transform:translateY(-1px);}
+  .modal-add-btn.added{background:var(--leaf);}
+
+  /* ---------- Dual checkout buttons ---------- */
+  .pay-btn{
+    background:var(--annatto); color:var(--paper);
+    margin-bottom:8px;
+  }
+  .pay-btn:hover:not(:disabled){background:var(--annatto-deep); transform:translateY(-2px);}
+  .wa-only-btn{
+    background:rgba(232,220,200,0.08);
+    border:1px solid rgba(232,220,200,0.2);
+    color:var(--paper-dim);
+    font-size:0.78rem;
+  }
+  .wa-only-btn:hover:not(:disabled){border-color:var(--paper); color:var(--paper); transform:translateY(-1px);}
+
+  /* ---------- Payment checkout modal ---------- */
+  .pay-modal-scrim{
+    position:fixed; inset:0; z-index:300;
+    background:rgba(0,0,0,0); pointer-events:none;
+    transition:background 0.3s ease;
+  }
+  .pay-modal-scrim.open{background:rgba(0,0,0,0.8); pointer-events:auto;}
+  .pay-modal{
+    position:fixed; bottom:0; left:0; right:0; z-index:301;
+    background:var(--paper); color:var(--char);
+    border-radius:20px 20px 0 0;
+    transform:translateY(100%);
+    transition:transform 0.36s cubic-bezier(.2,.9,.25,1);
+    max-height:92svh;
+    display:none;
+    flex-direction:column;
+    pointer-events:none;
+    width:100%;
+    overflow:hidden;
+  }
+  .pay-modal.open{
+    display:flex;
+    pointer-events:auto;
+  }
+  @media(min-width:600px){
+    .pay-modal{
+      top:50%; bottom:auto; left:50%; right:auto;
+      transform:translate(-50%,-40%) scale(0.96);
+      opacity:0;
+      width:100%; max-width:500px;
+      border-radius:20px;
+      transition:transform 0.3s cubic-bezier(.2,.9,.25,1), opacity 0.25s ease;
+      max-height:90svh;
+    }
+    .pay-modal.open{
+      transform:translate(-50%,-50%) scale(1);
+      opacity:1;
+    }
+  }
+  .pay-modal.open{transform:translateY(0);}
+  .pay-modal-handle{
+    width:36px; height:4px; border-radius:2px;
+    background:rgba(28,20,16,0.15);
+    margin:14px auto 0; flex-shrink:0;
+  }
+  @media(min-width:600px){.pay-modal-handle{display:none;}}
+  .pay-modal-head{
+    padding:20px 22px 14px;
+    border-bottom:1.5px dashed rgba(28,20,16,0.15);
+    display:flex; justify-content:space-between; align-items:flex-start;
+    flex-shrink:0;
+  }
+  .pay-modal-head h3{font-family:'Fraunces',serif; font-size:1.3rem; font-weight:600; color:var(--char);}
+  .pay-modal-head .sub{font-family:'Space Mono',monospace; font-size:0.72rem; color:#6b5d4a; margin-top:3px;}
+  .pay-modal-close{
+    background:rgba(28,20,16,0.08); border:none; border-radius:50%;
+    width:30px; height:30px; font-size:0.95rem; cursor:pointer; color:var(--char);
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.15s;
+  }
+  .pay-modal-close:hover{background:var(--annatto); color:var(--paper);}
+  .pay-modal-body{
+    overflow-y:auto; flex:1;
+    padding:16px 22px 0;
+  }
+  .pay-order-line{
+    display:flex; justify-content:space-between;
+    font-size:0.9rem; padding:8px 0;
+    border-bottom:1px dotted rgba(28,20,16,0.12); color:#3a2e22;
+  }
+  .pay-order-line .name{font-weight:500;}
+  .pay-order-line .price{font-family:'Space Mono',monospace; font-size:0.85rem; flex-shrink:0; margin-left:12px;}
+  .pay-divider{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin:16px 0 4px; font-family:'Fraunces',serif;
+  }
+  .pay-divider .label{font-size:0.78rem; color:#6b5d4a; font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:0.06em;}
+  .pay-divider .total{font-size:1.5rem; font-weight:700; color:var(--char);}
+  .pay-methods{
+    display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;
+  }
+  .pay-badge{
+    display:flex; align-items:center; gap:6px;
+    background:rgba(28,20,16,0.06);
+    border:1px solid rgba(28,20,16,0.12);
+    border-radius:8px; padding:7px 11px;
+    font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700;
+    color:#3a2e22;
+  }
+  .pay-badge .dot{width:7px; height:7px; border-radius:50%; background:var(--leaf); flex-shrink:0;}
+  .pay-fee-note{
+    font-size:0.78rem; color:#8a7c66; margin:0 0 14px;
+    display:flex; align-items:center; gap:6px;
+    background:rgba(28,20,16,0.04); border-radius:8px; padding:9px 12px;
+  }
+  .pay-fee-note svg{flex-shrink:0; color:var(--leaf);}
+  .pay-modal-foot{
+    padding:14px 16px;
+    padding-bottom:max(16px, env(safe-area-inset-bottom, 16px));
+    flex-shrink:0;
+    border-top:1.5px dashed rgba(28,20,16,0.15);
+    background:var(--paper);
+  }
+  .pay-billplz-btn{
+    width:100%; padding:14px 14px;
+    background:var(--char); color:var(--paper);
+    border:none; border-radius:10px;
+    font-family:'Space Mono',monospace; font-size:0.82rem; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:background 0.15s, transform 0.15s;
+    margin-bottom:10px;
+    white-space:normal; word-break:break-word;
+    line-height:1.3; text-align:center;
+    touch-action:manipulation;
+  }
+  .pay-billplz-btn:hover{background:var(--annatto); transform:translateY(-2px);}
+  .pay-wa-after{
+    width:100%; padding:12px 16px;
+    background:transparent; color:#6b5d4a;
+    border:1px solid rgba(28,20,16,0.18); border-radius:10px;
+    font-family:'Space Mono',monospace; font-size:0.78rem; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:border-color 0.15s, color 0.15s;
+  }
+  .pay-wa-after:hover{border-color:var(--char); color:var(--char);}
+  .pay-security{
+    text-align:center; font-size:0.72rem; color:#8a7c66; margin-top:10px;
+    display:flex; align-items:center; justify-content:center; gap:5px;
+  }
+
+  /* ---------- How to get paid (owner section) ---------- */
+  .owner{background:var(--char); border-top:1px solid var(--line);}
+  .owner-grid{
+    max-width:920px; margin:0 auto;
+    display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start;
+  }
+  @media(max-width:700px){.owner-grid{grid-template-columns:1fr;}}
+  .owner-steps{list-style:none; counter-reset:step; margin-top:24px;}
+  .owner-step{
+    counter-increment:step; display:flex; gap:14px;
+    padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .owner-step:last-child{border-bottom:none;}
+  .owner-step::before{
+    content:counter(step);
+    font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700;
+    color:var(--ember); background:rgba(242,163,61,0.1);
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:2px;
+  }
+  .owner-step h4{font-family:'Fraunces',serif; font-size:1rem; font-weight:500; color:var(--paper); margin-bottom:4px;}
+  .owner-step p{font-size:0.85rem; color:var(--paper-dim); line-height:1.55;}
+  .owner-compare{margin-top:24px;}
+  .compare-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; border-bottom:1px solid var(--line);
+    font-size:0.87rem;
+  }
+  .compare-row:last-child{border-bottom:none;}
+  .compare-row .provider{color:var(--paper); font-weight:500;}
+  .compare-row .fee{font-family:'Space Mono',monospace; font-size:0.82rem; color:var(--paper-dim);}
+  .compare-row .fee.best{color:var(--ember); font-weight:700;}
+  .compare-row .methods{font-size:0.76rem; color:var(--paper-dim);}
+  .compare-head{display:flex; justify-content:space-between; margin-bottom:8px; font-family:'Space Mono',monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--paper-dim);}
+
+  /* modal clickable — card body acts as trigger */
+  .menu-card-name{transition:color 0.15s ease;}
+  .spice{font-size:0.9em;}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="brandmark"><span class="dot"></span> Manila Tambayan</div>
+  <button class="cart-pill" id="topCartBtn">
+    Tab <span class="count mono" id="topCartCount">0</span>
+  </button>
+</div>
+
+<!-- Hero -->
+<!-- Address: 25, Jalan Rosmerah 2/8, Taman Johor Jaya, 81100 Johor Bahru, Johor Darul Ta'zim, Malaysia -->
+<header class="hero">
+  <div class="ember-field" id="emberField"></div>
+  <div class="eyebrow">Taman Johor Jaya, Johor Bahru &nbsp;·&nbsp; Open daily 11am–10pm</div>
+  <h1>A taste of home,<br><em>tap what you're craving</em>, <span style="color:#25d366;">order in WhatsApp.</span></h1>
+  <p class="sub">Real Filipino comfort food in the heart of JB — adobo, sisig, kare-kare, all pork-free. Tap the tally board below, and your order lands straight in our WhatsApp. No app, no account, no delivery commission baked into the price.</p>
+  <div class="actions">
+    <a href="#menu" class="btn btn-primary">Build your order ↓</a>
+    <a href="#info" class="btn btn-ghost">Hours &amp; location</a>
+  </div>
+  <div class="hero-meta">
+    <div><b>Ready in</b>15–20 min</div>
+    <div><b>Minimum order</b>None</div>
+    <div><b>Ordering fee</b>RM0 — it's just a chat</div>
+    <div><b>Payment</b>FPX · DuitNow QR · TNG · GrabPay · Cash</div>
+  </div>
+</header>
+
+<!-- Menu -->
+<section class="menu" id="menu">
+  <div class="section-head">
+    <div class="eyebrow">The tally board</div>
+    <h2>Tap what you're craving.</h2>
+    <p>Every tap adds it to your tab on the right. When you're set, send it — it opens WhatsApp with your full order already typed out.</p>
+    <p style="margin-top:14px; font-size:0.85rem; color:var(--paper-dim); border-left:2px solid var(--ember); padding-left:12px;">No pork, no lard, anywhere on this menu — every dish is chicken, beef, or fish. We welcome our Muslim neighbours and friends. We're not yet JAKIM halal-certified; ask our staff if you'd like details on ingredients or preparation.</p>
+  </div>
+
+  <div class="menu-wrap" id="menuWrap">
+    <!-- Groups injected by JS -->
+  </div>
+</section>
+
+<!-- Why this beats a generic ordering app -->
+<section class="why">
+  <div class="section-head">
+    <div class="eyebrow">Why WhatsApp</div>
+    <h2>No app to download. No account to make.</h2>
+    <p>This page is free to run and free to use — it's a menu plus a shortcut into a conversation, not a marketplace taking a cut of your order.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <h3>You order from a real chat</h3>
+      <p>No middleman platform. Your message goes straight to the kitchen's phone — same place we confirm pickup time and split-the-bill questions.</p>
+    </div>
+    <div class="why-card">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l4-7h10l4 7-9 10z"/><path d="M3 12h18M9 5l3 17M15 5l-3 17"/></svg>
+      <h3>Zero platform fees</h3>
+      <p>WhatsApp's catalog and chat are free for both sides. What you see on the menu is what you pay — no 20% commission baked in.</p>
+    </div>
+    <div class="why-card">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+      <h3>Order in Tagalog or English</h3>
+      <p>Write your order however's comfortable — Taglish is fine. We're Pinoy too, so there's no awkward translating like on the delivery apps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Info -->
+<section class="info" id="info">
+  <div class="info-grid">
+    <div>
+      <div class="eyebrow">Find us</div>
+      <h2 style="font-size:1.8rem; margin-bottom:14px;">Manila Tambayan</h2>
+      <p style="color:var(--paper-dim); line-height:1.7; max-width:40ch;">
+        Jalan Permas 10, Permas Jaya, 81750 Masai, Johor Bahru.<br>
+        A few minutes from the Permas Jaya CIQ, dine-in or order ahead for pickup.<br><br>
+        <span class="mono" style="font-size:0.85rem; color:var(--ember);">+60 12-345 6789</span>
+      </p>
+    </div>
+    <div>
+      <div class="eyebrow">Hours</div>
+      <div class="hours-table" id="hoursTable"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Manila Tambayan — demo built to show how a free WhatsApp ordering flow can work. Replace the phone number, menu, and photos with the real restaurant's details to launch.
+</footer>
+
+<!-- Owner: How to get paid section -->
+<section class="owner" id="owner">
+  <div class="owner-grid">
+    <div>
+      <div class="eyebrow">For the restaurant owner</div>
+      <h2 style="font-size:1.9rem;">Get paid online in 3 steps.</h2>
+      <p style="color:var(--paper-dim); margin-top:12px; line-height:1.6; max-width:42ch;">Billplz is Malaysia's cheapest payment gateway for F&B. No monthly fee, no setup fee. From RM0.75 per transaction — FPX bank transfer, DuitNow QR, Touch 'n Go, GrabPay, all in one.</p>
+      <ol class="owner-steps">
+        <li class="owner-step">
+          <div>
+            <h4>Sign up at billplz.com</h4>
+            <p>Free Basic plan, no credit card required. Submit your SSM registration + business bank account. Approval typically within 1–3 business days.</p>
+          </div>
+        </li>
+        <li class="owner-step">
+          <div>
+            <h4>Create a Collection</h4>
+            <p>In your Billplz dashboard, create one Collection called "Manila Tambayan Orders". This gives you a collection ID you'll use to generate payment links per order.</p>
+          </div>
+        </li>
+        <li class="owner-step">
+          <div>
+            <h4>Generate a Bill for each order</h4>
+            <p>When a WhatsApp order arrives, create a Bill in the dashboard (or via API) with the exact total and the customer's name. Billplz returns a link — paste it back into the same WhatsApp chat. Customer pays; you see it in your dashboard instantly.</p>
+          </div>
+        </li>
+        <li class="owner-step">
+          <div>
+            <h4>Funds settle next business day</h4>
+            <p>FPX payments settle to your Malaysian bank account the next business day. No waiting 7 days like PayPal. Cash flow stays healthy.</p>
+          </div>
+        </li>
+        <li class="owner-step">
+          <div>
+            <h4>Set up 3 WhatsApp Quick Replies</h4>
+            <p>In WhatsApp Business → Settings → Quick Replies, save these 3 canned messages. You'll send one of them on every single order — they take one tap instead of typing.</p>
+            <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+              <div style="background:rgba(232,220,200,0.06); border:1px solid rgba(232,220,200,0.14); border-radius:8px; padding:10px 13px;">
+                <div style="font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--ember); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Shortcut: /confirm</div>
+                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">✅ Confirmed! Your order is being prepared and will be ready in approximately 20 minutes. Please head over when you're ready — see you soon!</div>
+              </div>
+              <div style="background:rgba(232,220,200,0.06); border:1px solid rgba(232,220,200,0.14); border-radius:8px; padding:10px 13px;">
+                <div style="font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--ember); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Shortcut: /ready</div>
+                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">🍱 Your order is ready for pickup at our counter! Please come collect at your earliest convenience. Thank you for ordering from Manila Tambayan!</div>
+              </div>
+              <div style="background:rgba(232,220,200,0.06); border:1px solid rgba(232,220,200,0.14); border-radius:8px; padding:10px 13px;">
+                <div style="font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--ember); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Shortcut: /nopayment</div>
+                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">⚠️ Hi! We couldn't find a matching payment for your order. Could you please send us your Billplz transaction ID or a screenshot of your payment? We'll confirm and start preparing right away. Thank you!</div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+    <div>
+      <div class="eyebrow">Gateway comparison · Malaysia 2026</div>
+      <div class="owner-compare">
+        <div class="compare-head">
+          <span>Provider</span>
+          <span>FPX fee</span>
+        </div>
+        <div class="compare-row">
+          <div>
+            <div class="provider">✦ Billplz</div>
+            <div class="methods">FPX · DuitNow QR · TNG · GrabPay · BNPL · Cards</div>
+          </div>
+          <div class="fee best">RM0.75 flat</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <div class="provider">Toyyibpay</div>
+            <div class="methods">FPX · e-wallets (limited)</div>
+          </div>
+          <div class="fee">RM1.00 flat</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <div class="provider">SenangPay</div>
+            <div class="methods">FPX · Cards · e-wallets</div>
+          </div>
+          <div class="fee">RM1.00 or 1.5%</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <div class="provider">HitPay</div>
+            <div class="methods">FPX · DuitNow · 50+ methods</div>
+          </div>
+          <div class="fee">1.4% + RM0.50</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <div class="provider">Stripe</div>
+            <div class="methods">Cards · FPX only (no DuitNow QR, no TNG)</div>
+          </div>
+          <div class="fee">3% + RM1.00</div>
+        </div>
+        <div style="margin-top:16px; font-size:0.76rem; color:var(--paper-dim); line-height:1.5;">
+          All plans above have zero setup fee and zero monthly fee unless noted. Fees sourced from provider pricing pages, June 2026 — verify directly before signing up.
+        </div>
+      </div>
+      <a href="https://billplz.com/join/business" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:28px; display:inline-flex; text-decoration:none;">
+        Sign up for Billplz →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Scrim + Order tab -->
+<div class="scrim" id="scrim"></div>
+<aside class="order-tab" id="orderTab">
+  <div class="order-tab-head">
+    <div>
+      <h3>Your tab</h3>
+      <div class="sub" id="tabSub">0 items</div>
+    </div>
+    <button class="tab-close" id="tabClose" aria-label="Close order tab">✕</button>
+  </div>
+  <div class="order-tab-items" id="tabItems">
+    <div class="tab-empty">Still empty.<br>Tap items on the tally board to add them here.</div>
+  </div>
+  <div class="order-tab-foot">
+    <div class="tab-total-row">
+      <span class="label">Total</span>
+      <span class="amount mono" id="tabTotal">RM0</span>
+    </div>
+    <button class="wa-btn pay-btn" id="payNowBtn" disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      <span>Pay via Billplz · FPX / DuitNow / TNG</span>
+    </button>
+    <button class="wa-btn wa-only-btn" id="waSendBtn" disabled>
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1.1-.1.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5.1-1.3c1.4.8 3.1 1.3 4.9 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.3.9.9-3.2-.2-.3C4 14.9 3.5 13.5 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
+      <span id="waBtnLabel">WhatsApp only (pay on pickup)</span>
+    </button>
+    <div class="tab-hint">Billplz accepts FPX, DuitNow QR, Touch 'n Go, GrabPay — from RM0.75/txn, no monthly fee.</div>
+  </div>
+</aside>
+
+<button class="floating-cta" id="floatingCta">
+  <span>Review tab</span>
+  <span class="count" id="floatingCount">0</span>
+</button>
+
+<!-- Payment checkout modal -->
+<div class="pay-modal-scrim" id="payModalScrim"></div>
+<div class="pay-modal" id="payModal" role="dialog" aria-modal="true" aria-label="Payment checkout">
+  <div class="pay-modal-handle"></div>
+  <div class="pay-modal-head">
+    <div>
+      <h3>Pay your order</h3>
+      <div class="sub" id="payModalSub">0 items</div>
+    </div>
+    <button class="pay-modal-close" id="payModalClose" aria-label="Close">✕</button>
+  </div>
+  <div class="pay-modal-body" id="payModalBody">
+    <!-- order lines injected by JS -->
+  </div>
+  <div class="pay-modal-foot">
+    <button class="pay-billplz-btn" id="billplzBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      Pay <span id="billplzTotal">RM0</span> via Billplz
+    </button>
+    <button class="pay-wa-after" id="waAfterPayBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1.1-.1.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5.1-1.3c1.4.8 3.1 1.3 4.9 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.3.9.9-3.2-.2-.3C4 14.9 3.5 13.5 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
+      Already paid? Send order to WhatsApp
+    </button>
+    <div class="pay-security">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l7 4v6c0 4.4-3 8.5-7 10-4-1.5-7-5.6-7-10V6l7-4z"/></svg>
+      Secured by Billplz · PayNet · Bank Negara Malaysia
+    </div>
+  </div>
+</div>
+
+<footer>
+  Manila Tambayan · Permas Jaya, Johor Bahru · Payment powered by Billplz (RM0.75/txn, no monthly fee)
+  &nbsp;·&nbsp; <a href="https://facebook.com/ManilaTabayanjb" target="_blank" rel="noopener" style="color:var(--ember); text-decoration:none;">Follow us on Facebook →</a>
+</footer>
+
+<script>
+  // ---------------- Data ----------------
+  const RESTAURANT_PHONE = "60123456789"; // Malaysia country code 60 + number, no + or spaces
+  const MYR = n => "RM" + n.toLocaleString("en-MY", {minimumFractionDigits: 0});
+
+  const MENU = [
+    {
+      group: "Makanan · Meal",
+      tag: "Home-Style Specials",
+      items: [
+        { id:"toast", name:"101 French Toast", spice:"🌶️", desc:"A triple-stacked ensemble of chicken ham, cheddar cheese and roasted chicken. Hand dipped in cinnamon spiced egg wash and pan-scared to a delicate crisp. Finished with honey drizzle and served with fries.", price:12.90,
+          photo:"jpv-menu/101-french-toast.png" },
+        { id:"beef", name:"102 Beef burger", spice:"🌶️", desc:"A mounthwatering beef paty grilled to perfection, tooped with melted cheese, fresh lettuce, ripe tomatoes, and a hint of tangy sauce, all tucked inside a soft, toasted bun. Served with a side of golden crispy fries.", price:14.90,
+          photo:"jpv-menu/102-beef-burger.png" },
+        { id:"brisket", name:"103 Chowlong Pho", spice:"🌶️", desc:"Slow-braised beef brisket in a rich spiced broth. Served with thin rice noodles, fresh basil and toasted bread.", price:12.90,
+          photo:"jpv-menu/103-chowlong-pho.png" },
+        { id:"pasta", name:"104 Creamy Shrimp Pasta", spice:"🌶️", desc:"Succulent shrimp and snap greens in a rich, silken coconut-chili sauce. Paired with al dente pasta and golden crushed toast.", price:15.90,
+          photo:"jpv-menu/104-creamy-shrimp-pasta.png" },
+        { id:"crispychicken", name:"105 Crispy Fried Chicken with Spaghetti", spice:"🌶️", desc:"Golden, crispy fried chicken seasoned with flavorful blend of herbs and spices then fried to perfection. Served with classic spaghetti tossed in a rich, savory tomato sauce, slow-simmered with garlic and onions.", price:15.90,
+          photo:"jpv-menu/105-crispy-fried-chicken-with-spaghetti.png" },
+        { id:"chickeninasal", name:"106 Chicken Inasal", spice:"🌶️", desc:"Heritage-style chicken marinated in lemongrass and vinegar, slow-grilled with astisanal annatto oil for a smoky golden finish. Presented as a classic Nasi Lemak plate with fragrant coconut rice, house-made sambal and crisp anchovies.", price:15.90,
+          photo:"jpv-menu/106-chicken-inasal.png" },
+        { id:"filipinobraisedbeef", name:"107 Filipino Braised Beef", spice:"🌶️", desc:"Heritage-style chicken marinated in lemongrass and vinegar, slow-grilled with astisanal annatto oil for a smoky golden finish. Presented as a classic Nasi Lemak plate with fragrant coconut rice, house-made sambal and crisp anchovies.", price:15.90,
+          photo:"jpv-menu/107-filipino-braised-beef.png" },
+        { id:"chickensisig", name:"108 Chicken Sisig", spice:"🌶️", desc:"A Filipino favorite made with finely chopped tender chicken tossed in a savory mix of onions, chili, and zesty calamansi. Served with our signature kimchi.", price:12.90,
+          photo:"jpv-menu/108-chicken-sisig.png" },
+      ]
+    },
+    {
+      group: "Sabaw · Soups & Sour",
+      tag: "",
+      items: [
+        { id:"sinigang", name:"Sinigang na Isda", spice:"", desc:"Tamarind sour fish soup, kangkong, radish, string beans.", price:23,
+          photo:"https://www.yummykitchentv.com/wp-content/uploads/2022/10/Sinigang-na-Bangus-5.jpg" },
+        { id:"bulalo", name:"Bulalo", spice:"", desc:"Beef shank and bone marrow soup, corn, cabbage.", price:28,
+          photo:"https://cupofyum.com/wp-content/uploads/2022/10/Filipino-Bulalo-1.jpg" },
+      ]
+    },
+    {
+      group: "Manila Tambayan Specials",
+      tag: "house favorites",
+      items: [
+        { id:"karekare", name:"Kare-Kare", spice:"", desc:"Beef stew in peanut sauce, eggplant, long beans, bagoong on the side.", price:27,
+          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2020/03/kare-kare-2.jpg" },
+        { id:"lumpia", name:"Lumpiang Shanghai (10 pcs)", spice:"", desc:"Crispy fried chicken-and-vegetable spring rolls, sweet chili dip.", price:14,
+          photo:"https://thefoodietakesflight.com/wp-content/uploads/2020/09/Lumpiang-Shanghai-12.jpg" },
+        { id:"pancit", name:"Pancit Bihon", spice:"", desc:"Stir-fried rice noodles, chicken, carrots, cabbage.", price:16,
+          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2019/08/pancit-bihon-3.jpg" },
+        { id:"tortang", name:"Tortang Talong", spice:"", desc:"Grilled eggplant omelette, the Pinoy breakfast staple.", price:12,
+          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2015/07/tortang-talong-4.jpg" },
+      ]
+    },
+    {
+      group: "Panghimagas · Desserts & Drinks",
+      tag:"",
+      items: [
+        { id:"halohalo", name:"Halo-halo", spice:"", desc:"Ube, leche flan, sweet beans, shaved ice.", price:14,
+          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2020/05/halo-halo-2.jpg" },
+        { id:"buko", name:"Buko Pandan", spice:"", desc:"Young coconut strips, pandan jelly, cream.", price:10,
+          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2019/06/buko-pandan-salad-2.jpg" },
+        { id:"sago", name:"Sago't Gulaman", spice:"", desc:"Iced brown sugar syrup, tapioca pearls, gulaman.", price:7,
+          photo:"https://www.foxyfolksy.com/wp-content/uploads/2021/07/sagot-gulaman-2.jpg" },
+      ]
+    }
+  ];
+
+  const cart = {}; // id -> qty
+
+  // ---------------- Render menu ----------------
+  const menuWrap = document.getElementById('menuWrap');
+  MENU.forEach(group => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'menu-group';
+    groupEl.innerHTML = `
+      <div class="menu-group-title">
+        <h3>${group.group}</h3>
+        <div class="rule"></div>
+        ${group.tag ? `<div class="tag">${group.tag}</div>` : ''}
+      </div>
+      <div class="menu-cards" id="cards-${group.group.replace(/\W+/g,'_')}"></div>
+    `;
+    const cardsGrid = groupEl.querySelector('.menu-cards');
+
+    group.items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'menu-card';
+      card.id = `card-${item.id}`;
+      card.innerHTML = `
+        <div class="menu-card-clickable-area"
+          data-item-id="${item.id}" data-group="${group.group}"
+          role="button" tabindex="0"
+          aria-label="View details for ${item.name}"></div>
+        <div class="menu-card-photo-wrap">
+          <img class="menu-card-photo" src="${item.photo}" alt="${item.name}" loading="lazy"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="menu-card-photo-fallback" style="display:none;">🍽️</div>
+          ${item.spice ? `<div class="menu-card-spice">${item.spice}</div>` : ''}
+        </div>
+        <div class="menu-card-body">
+          <div class="menu-card-name">${item.name}</div>
+          <div class="menu-card-desc">${item.desc}</div>
+          <div class="menu-card-footer">
+            <span class="menu-card-price">${MYR(item.price)}</span>
+            <div id="card-ctrl-${item.id}">
+              <button class="card-add-btn" data-action="add" data-id="${item.id}" aria-label="Add ${item.name}">+</button>
+            </div>
+          </div>
+        </div>
+      `;
+      cardsGrid.appendChild(card);
+    });
+    menuWrap.appendChild(groupEl);
+  });
+
+  function updateCardControl(id){
+    const qty = cart[id] || 0;
+    const ctrl = document.getElementById(`card-ctrl-${id}`);
+    if (!ctrl) return;
+    if (qty === 0){
+      ctrl.innerHTML = `<button class="card-add-btn" data-action="add" data-id="${id}" aria-label="Add item">+</button>`;
+    } else {
+      ctrl.innerHTML = `
+        <div class="card-qty">
+          <button class="card-qty-btn" data-action="dec" data-id="${id}" aria-label="Remove one">–</button>
+          <span class="card-qty-num" id="qty-${id}">${qty}</span>
+          <button class="card-qty-btn" data-action="inc" data-id="${id}" aria-label="Add one">+</button>
+        </div>`;
+    }
+    // keep legacy qty-${id} span if present
+    const legacyQty = document.getElementById(`qty-${id}`);
+    if (legacyQty) legacyQty.textContent = qty;
+  }
+
+  function findItem(id){
+    for (const g of MENU) for (const it of g.items) if (it.id === id) return it;
+  }
+
+  menuWrap.addEventListener('click', (e) => {
+    // qty add / stepper on card footer
+    const btn = e.target.closest('[data-action]');
+    if (btn && btn.closest('#menuWrap')){
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (!id) return;
+      if (action === 'add' || action === 'inc'){
+        cart[id] = (cart[id] || 0) + 1;
+      }
+      if (action === 'dec'){
+        cart[id] = Math.max(0, (cart[id] || 0) - 1);
+        if (cart[id] === 0) delete cart[id];
+      }
+      updateCardControl(id);
+      renderTab();
+      return; // don't also open modal
+    }
+
+    // clickable overlay — open modal
+    const clickable = e.target.closest('.menu-card-clickable-area');
+    if (clickable){
+      const id = clickable.dataset.itemId;
+      const groupName = clickable.dataset.group || '';
+      const item = findItem(id);
+      if (item) openModal(item, groupName);
+    }
+  });
+
+  menuWrap.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const clickable = e.target.closest('.menu-card-clickable-area');
+    if (!clickable) return;
+    e.preventDefault();
+    const id = clickable.dataset.itemId;
+    const item = findItem(id);
+    if (item) openModal(item, clickable.dataset.group || '');
+  });
+
+  // ---------------- Order tab ----------------
+  const orderTab = document.getElementById('orderTab');
+  const scrim = document.getElementById('scrim');
+  const tabItems = document.getElementById('tabItems');
+  const tabTotal = document.getElementById('tabTotal');
+  const tabSub = document.getElementById('tabSub');
+  const waSendBtn = document.getElementById('waSendBtn');
+  const topCartCount = document.getElementById('topCartCount');
+  const floatingCta = document.getElementById('floatingCta');
+  const floatingCount = document.getElementById('floatingCount');
+
+  function removeFromTab(id, animate = true){
+    const el = document.getElementById(`tab-line-${id}`);
+    if (!el) return;
+    if (animate){
+      el.classList.add('removing');
+      setTimeout(() => el.remove(), 300);
+    } else {
+      el.remove();
+    }
+  }
+
+  function updateTabLine(id){
+    const item = findItem(id);
+    const qty  = cart[id] || 0;
+    const el   = document.getElementById(`tab-line-${id}`);
+    if (!el) return;
+    el.querySelector('.tab-qty-num').textContent = qty;
+    el.querySelector('.l-meta').textContent = `${qty} × ${MYR(item.price)}`;
+    el.querySelector('.l-price').textContent = MYR(item.price * qty);
+  }
+
+  function addTabLine(id){
+    const item = findItem(id);
+    const qty  = cart[id];
+    const row  = document.createElement('div');
+    row.className = 'tab-line';
+    row.id = `tab-line-${id}`;
+    row.innerHTML = `
+      <div class="tab-qty">
+        <button class="tab-qty-btn dec" aria-label="Decrease ${item.name}">–</button>
+        <span class="tab-qty-num">${qty}</span>
+        <button class="tab-qty-btn inc" aria-label="Increase ${item.name}">+</button>
+      </div>
+      <div class="l-info">
+        <div class="l-name">${item.name}</div>
+        <div class="l-meta">${qty} × ${MYR(item.price)}</div>
+      </div>
+      <div class="l-right">
+        <span class="l-price">${MYR(item.price * qty)}</span>
+        <button class="l-remove" aria-label="Remove ${item.name}">✕</button>
+      </div>
+    `;
+    // Dec button — subtract 1, remove at 0
+    row.querySelector('.dec').addEventListener('click', () => {
+      cart[id] = (cart[id] || 0) - 1;
+      if (cart[id] <= 0){
+        delete cart[id];
+        removeFromTab(id, true);
+      } else {
+        updateTabLine(id);
+      }
+      syncMenuQty(id);
+      refreshTabTotals();
+    });
+    // Inc button — add 1
+    row.querySelector('.inc').addEventListener('click', () => {
+      cart[id] = (cart[id] || 0) + 1;
+      updateTabLine(id);
+      syncMenuQty(id);
+      refreshTabTotals();
+    });
+    // Remove button — wipe completely
+    row.querySelector('.l-remove').addEventListener('click', () => {
+      delete cart[id];
+      removeFromTab(id, true);
+      syncMenuQty(id);
+      refreshTabTotals();
+    });
+    tabItems.appendChild(row);
+  }
+
+  function syncMenuQty(id){
+    updateCardControl(id);
+  }
+
+  function refreshTabTotals(){
+    const ids = Object.keys(cart);
+    const totalItems = ids.reduce((s,id) => s + cart[id], 0);
+    const totalPrice = ids.reduce((s,id) => s + cart[id] * findItem(id).price, 0);
+    topCartCount.textContent  = totalItems;
+    floatingCount.textContent = totalItems;
+    tabSub.textContent = `${totalItems} item${totalItems!==1?'s':''}`;
+    tabTotal.textContent = MYR(totalPrice);
+    waSendBtn.disabled  = totalItems === 0;
+    payNowBtn.disabled  = totalItems === 0;
+    floatingCta.classList.toggle('show', totalItems > 0 && !orderTab.classList.contains('open'));
+    // show empty state if all gone
+    if (ids.length === 0){
+      tabItems.innerHTML = `<div class="tab-empty">Still empty.<br>Tap items on the tally board to add them here.</div>`;
+    }
+  }
+
+  function renderTab(){
+    const ids = Object.keys(cart);
+    const totalItems = ids.reduce((s,id) => s + cart[id], 0);
+    const totalPrice = ids.reduce((s,id) => s + cart[id] * findItem(id).price, 0);
+
+    topCartCount.textContent  = totalItems;
+    floatingCount.textContent = totalItems;
+    tabSub.textContent = `${totalItems} item${totalItems!==1?'s':''}`;
+    tabTotal.textContent = MYR(totalPrice);
+    waSendBtn.disabled  = totalItems === 0;
+    floatingCta.classList.toggle('show', totalItems > 0 && !orderTab.classList.contains('open'));
+
+    if (ids.length === 0){
+      tabItems.innerHTML = `<div class="tab-empty">Still empty.<br>Tap items on the tally board to add them here.</div>`;
+      return;
+    }
+
+    // Reconcile DOM with cart — add new rows, remove stale ones
+    // Remove rows no longer in cart
+    tabItems.querySelectorAll('.tab-line').forEach(el => {
+      const id = el.id.replace('tab-line-','');
+      if (!cart[id]) el.remove();
+    });
+    // Add or update
+    ids.forEach(id => {
+      if (document.getElementById(`tab-line-${id}`)){
+        updateTabLine(id);
+      } else {
+        addTabLine(id);
+      }
+    });
+    // clear empty state if it was showing
+    const empty = tabItems.querySelector('.tab-empty');
+    if (empty && ids.length > 0) empty.remove();
+  }
+
+  function openTab(){
+    orderTab.classList.add('open');
+    scrim.classList.add('open');
+    floatingCta.classList.remove('show');
+  }
+  function closeTab(){
+    orderTab.classList.remove('open');
+    scrim.classList.remove('open');
+    renderTab();
+  }
+
+  document.getElementById('topCartBtn').addEventListener('click', openTab);
+  document.getElementById('floatingCta').addEventListener('click', openTab);
+  document.getElementById('tabClose').addEventListener('click', closeTab);
+  scrim.addEventListener('click', closeTab);
+
+  // ---------------- Send to WhatsApp ----------------
+  waSendBtn.addEventListener('click', () => {
+    const ids = Object.keys(cart);
+    if (ids.length === 0) return;
+    let total = 0;
+    const lines = ids.map(id => {
+      const item = findItem(id);
+      const qty = cart[id];
+      const lineTotal = item.price * qty;
+      total += lineTotal;
+      return `• ${qty}x ${item.name} — ${MYR(lineTotal)}`;
+    });
+    const message =
+`Hi Manila Tambayan! I'd like to order:
+
+${lines.join('\n')}
+
+Total: ${MYR(total)}
+
+Name: 
+Pickup or dine-in: 
+Time: `;
+
+    const url = `https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  });
+
+  // ---------------- Hours table ----------------
+  const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const todayIdx = new Date().getDay();
+  const hoursTable = document.getElementById('hoursTable');
+  hoursTable.innerHTML = DAYS.map((d,i) => `
+    <div class="hours-row ${i===todayIdx ? 'today':''}">
+      <span>${d}${i===todayIdx ? ' — today':''}</span>
+      <b>11:00 AM – 10:00 PM</b>
+    </div>
+  `).join('');
+
+  // ---------------- Ember particles ----------------
+  const emberField = document.getElementById('emberField');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion) {
+    for (let i = 0; i < 22; i++){
+      const s = document.createElement('span');
+      const left = Math.random()*100;
+      const duration = 5 + Math.random()*6;
+      const delay = Math.random()*8;
+      const drift = (Math.random()*60 - 30) + 'px';
+      s.style.left = left + '%';
+      s.style.animationDuration = duration + 's';
+      s.style.animationDelay = delay + 's';
+      s.style.setProperty('--drift', drift);
+      emberField.appendChild(s);
+    }
+  }
+
+  renderTab();
+
+  // ---------------- Item modal ----------------
+  // Build modal DOM
+  const modalScrim = document.createElement('div');
+  modalScrim.className = 'item-modal-scrim';
+  document.body.appendChild(modalScrim);
+
+  const modalWrap = document.createElement('div');
+  modalWrap.className = 'item-modal-wrap';
+  modalWrap.innerHTML = `
+    <div class="item-modal" id="itemModal" role="dialog" aria-modal="true" aria-label="Item detail">
+      <div class="modal-drag-handle"></div>
+      <div class="modal-photo-wrap">
+        <img class="modal-photo" id="modalPhoto" src="" alt="" loading="lazy"
+          onerror="this.style.display='none'; document.getElementById('modalPhotoFallback').style.display='flex'">
+        <div class="modal-photo-fallback" id="modalPhotoFallback" style="display:none;">🍽️</div>
+        <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tag" id="modalTag"></div>
+        <div class="modal-name" id="modalName"></div>
+        <div class="modal-desc" id="modalDesc"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-qty" id="modalQty">
+          <button class="modal-qty-btn" id="modalDec" aria-label="Decrease quantity">–</button>
+          <span class="modal-qty-num" id="modalQtyNum">1</span>
+          <button class="modal-qty-btn" id="modalInc" aria-label="Increase quantity">+</button>
+        </div>
+        <button class="modal-add-btn" id="modalAddBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          <span id="modalAddLabel">Add to tab</span>
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modalWrap);
+
+  const itemModal    = document.getElementById('itemModal');
+  const modalPhoto   = document.getElementById('modalPhoto');
+  const modalPhotoFB = document.getElementById('modalPhotoFallback');
+  const modalTag     = document.getElementById('modalTag');
+  const modalName    = document.getElementById('modalName');
+  const modalDesc    = document.getElementById('modalDesc');
+  const modalPrice   = document.getElementById('modalPrice');
+  const modalQtyNum  = document.getElementById('modalQtyNum');
+  const modalAddBtn  = document.getElementById('modalAddBtn');
+  const modalAddLabel= document.getElementById('modalAddLabel');
+
+  let modalItem = null;
+  let modalQty  = 1;
+
+  function updateModalQtyDisplay(){
+    modalQtyNum.textContent = modalQty;
+    const base = modalItem ? MYR(modalItem.price * modalQty) : '';
+    modalAddLabel.textContent = `Add ${modalQty > 1 ? modalQty + '× ' : ''}· ${base}`;
+  }
+
+  function openModal(item, groupName){
+    openModalClean();
+    modalItem = item;
+    modalQty  = Math.max(1, cart[item.id] || 1);
+
+    // reset photo
+    modalPhoto.style.display = 'block';
+    modalPhotoFB.style.display = 'none';
+    modalPhoto.src = item.photo || '';
+    modalPhoto.alt = item.name;
+
+    modalTag.textContent  = groupName;
+    modalName.innerHTML   = item.name + (item.spice ? ` <span class="spice">${item.spice}</span>` : '');
+    modalDesc.textContent = item.desc;
+    modalPrice.textContent= MYR(item.price);
+
+    updateModalQtyDisplay();
+
+    modalScrim.classList.add('open');
+    modalWrap.classList.add('open');
+    itemModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // trap focus
+    setTimeout(() => itemModal.focus(), 50);
+  }
+
+  function closeModal(){
+    modalScrim.classList.remove('open');
+    modalWrap.classList.remove('open');
+    itemModal.classList.remove('open');
+    document.body.style.overflow = '';
+    modalItem = null;
+    // ensure scrim is fully removed from paint after transition
+    setTimeout(() => { modalScrim.style.display = 'none'; }, 320);
+  }
+
+  function openModalClean(){
+    // re-show scrim in case it was force-hidden
+    modalScrim.style.display = '';
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modalScrim.addEventListener('click', closeModal);
+
+  document.getElementById('modalInc').addEventListener('click', () => {
+    modalQty++;
+    updateModalQtyDisplay();
+  });
+  document.getElementById('modalDec').addEventListener('click', () => {
+    if (modalQty > 1) modalQty--;
+    updateModalQtyDisplay();
+  });
+
+  modalAddBtn.addEventListener('click', () => {
+    if (!modalItem) return;
+    cart[modalItem.id] = (cart[modalItem.id] || 0) + modalQty;
+    updateCardControl(modalItem.id);
+    renderTab();
+
+    // brief "Added!" flash then close
+    modalAddBtn.classList.add('added');
+    modalAddLabel.textContent = '✓ Added to tab!';
+    setTimeout(() => {
+      modalAddBtn.classList.remove('added');
+      closeModal();
+    }, 700);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && itemModal.classList.contains('open')) closeModal();
+  });
+
+  const payNowBtn = document.getElementById('payNowBtn');
+
+  // ---------------- Payment modal ----------------
+  const BILLPLZ_COLLECTION_ID = 'YOUR_COLLECTION_ID'; // replace with real Billplz Collection ID
+  const BILLPLZ_API_KEY       = 'YOUR_API_KEY';        // replace — never expose in production; use a backend
+
+  const payModalScrim = document.getElementById('payModalScrim');
+  const payModal      = document.getElementById('payModal');
+  const payModalBody  = document.getElementById('payModalBody');
+  const payModalSub   = document.getElementById('payModalSub');
+  const billplzTotal  = document.getElementById('billplzTotal');
+  const billplzBtn    = document.getElementById('billplzBtn');
+  const waAfterPayBtn = document.getElementById('waAfterPayBtn');
+
+  // Wire Pay Now button in order tab
+  payNowBtn.addEventListener('click', openPayModal);
+
+  function buildOrderSummary(){
+    const ids = Object.keys(cart);
+    let total = 0;
+    const lines = ids.map(id => {
+      const item = findItem(id);
+      const qty  = cart[id];
+      const sub  = item.price * qty;
+      total += sub;
+      return { name: `${qty}× ${item.name}`, price: sub };
+    });
+    return { lines, total, count: ids.reduce((s,id)=>s+cart[id],0) };
+  }
+
+  function openPayModal(){
+    const { lines, total, count } = buildOrderSummary();
+    if (count === 0) return;
+
+    payModalSub.textContent = `${count} item${count!==1?'s':''}`;
+    billplzTotal.textContent = MYR(total);
+
+    payModalBody.innerHTML = `
+      <div style="margin-bottom:4px;">
+        ${lines.map(l=>`
+          <div class="pay-order-line">
+            <span class="name">${l.name}</span>
+            <span class="price">${MYR(l.price)}</span>
+          </div>`).join('')}
+      </div>
+      <div class="pay-divider">
+        <span class="label">Total</span>
+        <span class="total">${MYR(total)}</span>
+      </div>
+      <div class="pay-methods">
+        <div class="pay-badge"><span class="dot"></span>FPX Online Banking</div>
+        <div class="pay-badge"><span class="dot"></span>DuitNow QR</div>
+        <div class="pay-badge"><span class="dot"></span>Touch 'n Go</div>
+        <div class="pay-badge"><span class="dot"></span>GrabPay</div>
+        <div class="pay-badge"><span class="dot"></span>Boost</div>
+        <div class="pay-badge"><span class="dot"></span>ShopeePay</div>
+        <div class="pay-badge"><span class="dot"></span>Visa / MC</div>
+      </div>
+      <div class="pay-fee-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        Powered by Billplz — RM0.75 flat per transaction, settled to restaurant next business day.
+      </div>
+    `;
+
+    payModalScrim.classList.add('open');
+    payModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePayModal(){
+    payModalScrim.classList.remove('open');
+    payModal.classList.remove('open');
+    document.body.style.overflow = '';
+    // reset Billplz button back to default state
+    billplzBtn.disabled = false;
+    billplzBtn.style.background = '';
+    billplzBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> Pay <span id="billplzTotal">${MYR(Object.keys(cart).reduce((s,id)=>s+cart[id]*findItem(id).price,0))}</span> via Billplz`;
+  }
+
+  document.getElementById('payModalClose').addEventListener('click', closePayModal);
+  payModalScrim.addEventListener('click', closePayModal);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && payModal.classList.contains('open')) closePayModal();
+  });
+
+  // "Pay via Billplz" — opens Billplz payment link
+  // In production: call your backend to create a Billplz Bill via their API,
+  // then redirect to the bill URL. Here we demo the dashboard link approach.
+  billplzBtn.addEventListener('click', async () => {
+    const { lines, total } = buildOrderSummary();
+
+    // Disable button and show loading state
+    billplzBtn.disabled = true;
+    billplzBtn.innerHTML = `<span style="opacity:0.7">Creating payment link…</span>`;
+
+    // ── Check if real credentials are set ────────────────────────────────────
+    const isConfigured = BILLPLZ_COLLECTION_ID !== 'YOUR_COLLECTION_ID'
+                      && BILLPLZ_API_KEY       !== 'YOUR_API_KEY';
+
+    if (!isConfigured) {
+      // ── Not yet configured — show setup instructions inline ───────────────
+      billplzBtn.style.background  = 'rgba(242,163,61,0.15)';
+      billplzBtn.style.color       = 'var(--ember)';
+      billplzBtn.style.border      = '1px solid var(--ember)';
+      billplzBtn.style.borderRadius= '10px';
+      billplzBtn.style.cursor      = 'default';
+      billplzBtn.innerHTML = `
+        <div style="text-align:left; font-family:'Work Sans',sans-serif; font-size:0.82rem; line-height:1.6; padding:4px 0;">
+          <b style="font-size:0.9rem; display:block; margin-bottom:6px;">⚙️ Billplz not yet configured</b>
+          To go live, replace these two lines near the top of the &lt;script&gt;:<br><br>
+          <code style="background:rgba(0,0,0,0.2); padding:6px 10px; border-radius:6px; display:block; font-size:0.78rem; margin-bottom:6px;">
+            const BILLPLZ_COLLECTION_ID = '<b>YOUR_COLLECTION_ID</b>';<br>
+            const BILLPLZ_API_KEY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = '<b>YOUR_API_KEY</b>';
+          </code>
+          Get both from your <a href="https://billplz-sandbox.billplz.com" target="_blank" style="color:var(--ember);">Billplz Sandbox dashboard</a> → Collections.<br>
+          For production use <a href="https://www.billplz.com" target="_blank" style="color:var(--ember);">billplz.com</a> credentials instead.
+        </div>`;
+      return;
+    }
+
+    // ── Real Billplz API call (sandbox or production) ─────────────────────
+    // Sandbox base:    https://billplz-sandbox.billplz.com/api/v3
+    // Production base: https://www.billplz.com/api/v3
+    const isSandbox  = BILLPLZ_API_KEY.startsWith('sandbox-');
+    const apiBase    = isSandbox
+      ? 'https://billplz-sandbox.billplz.com/api/v3'
+      : 'https://www.billplz.com/api/v3';
+
+    const description = 'Manila Tambayan: ' + lines.map(l => l.name).join(', ');
+    const amountCents = total * 100; // Billplz uses cents (sen)
+
+    try {
+      const res = await fetch(`${apiBase}/bills`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(BILLPLZ_API_KEY + ':')
+        },
+        body: JSON.stringify({
+          collection_id: BILLPLZ_COLLECTION_ID,
+          description:   description,
+          email:         'customer@order.com',  // replace with customer input if collected
+          name:          'Manila Tambayan Customer',
+          amount:        amountCents,
+          callback_url:  window.location.href,  // Billplz pings here on payment
+          redirect_url:  window.location.href   // customer returns here after paying
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err?.error?.message || `HTTP ${res.status}`);
+      }
+
+      const bill = await res.json();
+      // bill.url is the hosted Billplz payment page
+      window.open(bill.url, '_blank');
+
+      billplzBtn.style.background = 'var(--leaf)';
+      billplzBtn.style.color      = 'var(--paper)';
+      billplzBtn.style.border     = 'none';
+      billplzBtn.innerHTML = `✓ Payment page opened — send order to WhatsApp below`;
+
+    } catch (err) {
+      // Show error clearly so the owner knows what went wrong
+      billplzBtn.disabled          = false;
+      billplzBtn.style.background  = 'rgba(196,69,36,0.15)';
+      billplzBtn.style.color       = '#C44524';
+      billplzBtn.style.border      = '1px solid rgba(196,69,36,0.4)';
+      billplzBtn.style.borderRadius= '10px';
+      billplzBtn.innerHTML = `
+        <div style="text-align:left; font-family:'Work Sans',sans-serif; font-size:0.82rem; line-height:1.6; padding:4px 0;">
+          <b style="display:block; margin-bottom:4px;">⚠️ Billplz error — ${err.message}</b>
+          Check that your Collection ID and API Key are correct, and that the Collection is active in your Billplz dashboard.
+          <span style="display:block; margin-top:6px; font-size:0.76rem; opacity:0.7;">Tap to try again</span>
+        </div>`;
+      // Restore button on next click
+      billplzBtn.addEventListener('click', () => {
+        billplzBtn.style.cssText = '';
+        billplzBtn.innerHTML = `Pay ${MYR(total)} via Billplz`;
+      }, { once: true });
+    }
+  });
+
+  // "Already paid? Send to WhatsApp" — fires WA with payment note
+  waAfterPayBtn.addEventListener('click', () => {
+    const { lines, total } = buildOrderSummary();
+    const lineText = lines.map(l=>`• ${l.name} — ${MYR(l.price)}`).join('\n');
+    const message =
+`Hi Manila Tambayan! I've paid via Billplz and would like to confirm my order:
+
+${lineText}
+
+Total paid: ${MYR(total)}
+
+Billplz reference / transaction ID: ___________
+Name: 
+Pickup or dine-in: 
+Time: `;
+    const url = `https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+    closePayModal();
+  });
+
+  // Enable payNowBtn alongside waSendBtn (patch renderTab)
+  const _origRenderTab = renderTab;
+  renderTab = function(){
+    _origRenderTab();
+    const hasItems = Object.keys(cart).length > 0;
+    payNowBtn.disabled = !hasItems;
+  };
+
+  renderTab(); // initial render
+
+</script>
+</body>
+</html>
