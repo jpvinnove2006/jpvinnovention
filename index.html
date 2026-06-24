@@ -114,7 +114,11 @@
   @media (prefers-reduced-motion: reduce){
     .ember-field{display:none;}
   }
-
+  
+  .logo{
+    margin-bottom:8px;
+    position:relative; z-index:2;
+  }
   .eyebrow{
     font-family:'Space Mono', monospace;
     font-size:0.78rem;
@@ -864,7 +868,8 @@
 
 <!-- Top bar -->
 <div class="topbar">
-  <div class="brandmark"><span class="dot"></span> Manila Tambayan</div>
+  <div class="brandmark"><span class="dot"></span> JPV INNOVENTION<br/>
+  Manila Tambayan</div>
   <button class="cart-pill" id="topCartBtn">
     Tab <span class="count mono" id="topCartCount">0</span>
   </button>
@@ -873,10 +878,12 @@
 <!-- Hero -->
 <!-- Address: 25, Jalan Rosmerah 2/8, Taman Johor Jaya, 81100 Johor Bahru, Johor Darul Ta'zim, Malaysia -->
 <header class="hero">
+  <div class="logo"><img src="jpv-menu/jpv-logo.png"></div>
   <div class="ember-field" id="emberField"></div>
+
   <div class="eyebrow">Taman Johor Jaya, Johor Bahru &nbsp;·&nbsp; Open daily 11am–10pm</div>
   <h1>A taste of home,<br><em>tap what you're craving</em>, <span style="color:#25d366;">order in WhatsApp.</span></h1>
-  <p class="sub">Real Filipino comfort food in the heart of JB — toast, beef, brisket, pasta, crispy chicken, chicken inasal, chicken sisig, all pork-free. Tap the tally board below, and your order lands straight in our WhatsApp. No app, no account, no delivery commission baked into the price.</p>
+  <p class="sub">Real Filipino comfort food in the heart of JB — toast, brisket, pasta, chicken, all pork-free. Tap the tally board below, and your order lands straight in our WhatsApp. No app, no account, no delivery commission baked into the price.</p>
   <div class="actions">
     <a href="#menu" class="btn btn-primary">Build your order ↓</a>
     <a href="#info" class="btn btn-ghost">Hours &amp; location</a>
