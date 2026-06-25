@@ -382,7 +382,7 @@
   }
   .order-tab.open{transform:translateX(0);}
   .order-tab-head{
-    padding:16px 16px 14px;
+    padding:16px 24px 14px;
     padding-top:max(16px, env(safe-area-inset-top, 16px));
     border-bottom:2px dashed rgba(28,20,16,0.18);
     display:flex; justify-content:space-between; align-items:flex-start;
@@ -399,7 +399,7 @@
   }
   .order-tab-items{
     flex:1; overflow-y:auto; overflow-x:hidden;
-    padding:12px 16px;
+    padding:12px 22px 16px;
     -webkit-overflow-scrolling:touch;
   }
   .tab-line{
@@ -460,7 +460,7 @@
     font-size:0.9rem; line-height:1.6;
   }
   .order-tab-foot{
-    padding:14px 16px;
+    padding:14px 22px 16px;
     padding-bottom:max(16px, env(safe-area-inset-bottom, 16px));
     border-top:2px dashed rgba(28,20,16,0.18);
     flex-shrink:0;
@@ -486,7 +486,7 @@
     white-space:normal; word-break:break-word;
     line-height:1.3;
   }
-  .wa-btn:hover{background:var(--annatto); transform:translateY(-2px);}
+  .wa-btn:hover{background:#25d366; transform:translateY(-2px);}
   .wa-btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
   .wa-btn svg{width:16px; height:16px; flex-shrink:0;}
   .tab-hint{
@@ -632,13 +632,20 @@
   .modal-desc{
     margin-top:12px; font-size:0.95rem; color:var(--paper-dim); line-height:1.65;
   }
-  .modal-footer{
+  /*.modal-footer{
     padding:18px 22px 28px;
     display:flex; align-items:center; gap:14px;
     border-top:1px solid var(--line);
     margin-top:20px;
     flex-shrink:0;
-  }
+  }*/
+    .modal-footer{
+        padding: 14px 10px 12px 2px;
+        display: flex; align-items: center;gap: 2px;
+        border-top: 1px solid var(--line);
+        margin-top: 20px;
+        flex-shrink: 0;
+    }
   .modal-price{
     font-family:'Fraunces', serif; font-size:1.4rem; font-weight:600;
     color:var(--ember); white-space:nowrap;
@@ -684,12 +691,12 @@
   }
   .pay-btn:hover:not(:disabled){background:var(--annatto-deep); transform:translateY(-2px);}
   .wa-only-btn{
-    background:rgba(232,220,200,0.08);
+    /*background:rgba(232,220,200,0.08);*/
     border:1px solid rgba(232,220,200,0.2);
     color:var(--paper-dim);
     font-size:0.78rem;
   }
-  .wa-only-btn:hover:not(:disabled){border-color:var(--paper); color:var(--paper); transform:translateY(-1px);}
+  .wa-only-btn:hover:not(:disabled){border-color:#195710; color:#195710; transform:translateY(-1px);}
 
   /* ---------- Payment checkout modal ---------- */
   .pay-modal-scrim{
@@ -884,7 +891,7 @@
   <h1>A taste of home,<br><em>tap what you're craving</em>, <span style="color:#25d366;">order in WhatsApp.</span></h1>
   <p class="sub">Real Filipino comfort food in the heart of JB — toast, brisket, pasta, chicken, all pork-free. Tap the tally board below, and your order lands straight in our WhatsApp. No app, no account, no delivery commission baked into the price.</p>
   <div class="actions">
-    <a href="#menu" class="btn btn-primary">Build your order ↓</a>
+    <a href="#menu" class="btn btn-primary">Build order ↓</a>
     <a href="#info" class="btn btn-ghost">Hours &amp; location</a>
   </div>
   <div class="hero-meta">
@@ -944,7 +951,7 @@
       <p style="color:var(--paper-dim); line-height:1.7; max-width:40ch;">
         Jalan Permas 10, Permas Jaya, 81750 Masai, Johor Bahru.<br>
         A few minutes from the Permas Jaya CIQ, dine-in or order ahead for pickup.<br><br>
-        <span class="mono" style="font-size:0.85rem; color:var(--ember);">+60 12-345 6789</span>
+        <span class="mono" style="font-size:0.85rem; color:var(--ember);">+601137271983</span>
       </p>
     </div>
     <div>
@@ -1137,7 +1144,7 @@
 
 <script>
   // ---------------- Data ----------------
-  const RESTAURANT_PHONE = "60123456789"; // Malaysia country code 60 + number, no + or spaces
+  const RESTAURANT_PHONE = "601137271983"; // Malaysia country code 60 + number, no + or spaces
   const MYR = n => "RM" + n.toLocaleString("en-MY", {minimumFractionDigits: 0});
 
   const MENU = [
@@ -1554,7 +1561,7 @@ Time: `;
           <button class="modal-qty-btn" id="modalInc" aria-label="Increase quantity">+</button>
         </div>
         <button class="modal-add-btn" id="modalAddBtn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          <!--<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>-->
           <span id="modalAddLabel">Add to tab</span>
         </button>
       </div>
