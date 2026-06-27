@@ -3,7 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manila Tambayan — Order via WhatsApp · Johor Bahru</title>
+<title>Kabayan Tambayan — Order via WhatsApp · Johor Bahru</title>
+
+<!-- ══ SECURITY HEADERS (static site equivalents) ══════════════════════ -->
+<!-- Content Security Policy: only allow scripts/styles from self + Google Fonts -->
+<meta http-equiv="Content-Security-Policy"
+  content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: https:;
+    connect-src 'self' https://api.anthropic.com;
+    frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'self';
+  ">
+<!-- Prevent clickjacking — disallow embedding in iframes -->
+<meta http-equiv="X-Frame-Options" content="DENY">
+<!-- Control referrer information sent to external links -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- Prevent MIME type sniffing -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- ════════════════════════════════════════════════════════════════════ -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -114,11 +137,7 @@
   @media (prefers-reduced-motion: reduce){
     .ember-field{display:none;}
   }
-  
-  .logo{
-    margin-bottom:8px;
-    position:relative; z-index:2;
-  }
+
   .eyebrow{
     font-family:'Space Mono', monospace;
     font-size:0.78rem;
@@ -132,7 +151,7 @@
     position:relative; z-index:2;
     font-size:clamp(2.6rem, 9vw, 4.6rem);
     line-height:0.98;
-    color:#ffdea7;
+    color:var(--paper);
     max-width:13ch;
   }
   .hero h1 em{
@@ -156,8 +175,7 @@
   .btn{
     font-family:'Space Mono', monospace;
     font-size:0.85rem; font-weight:700;
-    /*padding:14px 22px;*/
-    padding: 8px 8px;
+    padding:8px 8px;
     border-radius:8px;
     border:1.5px solid transparent;
     cursor:pointer;
@@ -168,7 +186,10 @@
   .btn-primary{background:var(--annatto); color:var(--paper);}
   .btn-primary:hover{transform:translateY(-2px); background:var(--annatto-deep);}
   /*.btn-ghost{border-color:rgba(232,220,200,0.3); color:var(--paper);}*/
-  .btn-ghost {color: #c44524;background: #e8dcc8;}
+  .btn-ghost {
+    color: #c44524;
+    background: #e8dcc8;
+  }
   .btn-ghost:hover{border-color:var(--paper); transform:translateY(-2px);}
 
   .hero-meta{
@@ -184,16 +205,73 @@
   .hero-meta b{color:var(--ember); display:block; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px; font-weight:700;}
 
   /* ---------- Section shell ---------- */
-  section{padding:88px 24px; position:relative;}
-  .section-head{max-width:640px; margin:0 auto 48px;}
+  section{padding:108px 24px; position:relative;}
+  .section-head{max-width:640px; margin:0 auto 28px;}
   .section-head .eyebrow{margin-bottom:12px;}
   .section-head h2{font-size:clamp(1.9rem, 4vw, 2.6rem); color:var(--paper);}
   .section-head p{color:var(--paper-dim); margin-top:12px; line-height:1.6; max-width:48ch;}
 
-  /* ---------- Menu — Card Grid ---------- */
+  /* ---------- Fixed category nav ---------- */
+  .menu-cat-nav{
+    position:fixed;
+    top:48px; /* flush below the 48px topbar */
+    left:0; right:0;
+    z-index:45;
+    background:var(--char-2);
+    border-bottom:1px solid rgba(232,220,200,0.18);
+    padding:10px 16px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* hidden until menu section is in view */
+    transform:translateY(-100%);
+    opacity:0;
+    pointer-events:none;
+    transition:transform 0.28s ease, opacity 0.22s ease;
+    box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  }
+  .menu-cat-nav::-webkit-scrollbar{display:none;}
+  .menu-cat-nav.visible{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .menu-cat-nav-inner{
+    display:flex; gap:8px;
+    min-width:max-content;
+    max-width:1040px; margin:0 auto;
+  }
+  .cat-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 8px; border-radius:999px;
+    font-family:'Space Mono',monospace; font-size:0.76rem; font-weight:700;
+    letter-spacing:0.04em;
+    background:rgba(232,220,200,0.06);
+    border:1px solid var(--line);
+    color:var(--paper-dim);
+    cursor:pointer;
+    transition:background 0.15s, border-color 0.15s, color 0.15s;
+    white-space:nowrap;
+    touch-action:manipulation;
+  }
+  .cat-pill:hover{
+    background:rgba(232,220,200,0.1);
+    border-color:rgba(232,220,200,0.25);
+    color:var(--paper);
+  }
+  .cat-pill.active{
+    background:var(--annatto);
+    border-color:var(--annatto);
+    color:var(--paper);
+  }
+  .cat-pill .cat-dot{
+    width:6px; height:6px; border-radius:50%;
+    background:currentColor; flex-shrink:0; opacity:0.7;
+  }
+
   .menu{background:var(--char-2);}
-  .menu-wrap{max-width:1040px; margin:0 auto;}
   .menu-group{margin-bottom:56px;}
+  .menu-wrap{max-width:1040px; margin:0 auto;}
   .menu-group-title{
     display:flex; align-items:baseline; gap:14px;
     margin-bottom:22px;
@@ -259,7 +337,7 @@
   .menu-card-body{
     padding:13px 14px 14px;
     display:flex; flex-direction:column; gap:4px; flex:1;
-    background-color:#195710;
+    background-color: #195710;
   }
   .menu-card-name{
     font-family:'Fraunces',serif; font-weight:600; font-size:0.98rem;
@@ -382,7 +460,7 @@
   }
   .order-tab.open{transform:translateX(0);}
   .order-tab-head{
-    padding:16px 24px 14px;
+    padding:16px 16px 14px;
     padding-top:max(16px, env(safe-area-inset-top, 16px));
     border-bottom:2px dashed rgba(28,20,16,0.18);
     display:flex; justify-content:space-between; align-items:flex-start;
@@ -399,7 +477,7 @@
   }
   .order-tab-items{
     flex:1; overflow-y:auto; overflow-x:hidden;
-    padding:12px 22px 16px;
+    padding:12px 16px;
     -webkit-overflow-scrolling:touch;
   }
   .tab-line{
@@ -460,7 +538,7 @@
     font-size:0.9rem; line-height:1.6;
   }
   .order-tab-foot{
-    padding:14px 22px 16px;
+    padding:14px 16px;
     padding-bottom:max(16px, env(safe-area-inset-bottom, 16px));
     border-top:2px dashed rgba(28,20,16,0.18);
     flex-shrink:0;
@@ -475,9 +553,10 @@
   .tab-total-row .amount{font-size:1.4rem; font-weight:600;}
   .wa-btn{
     width:100%;
-    background:#1C1410; color:var(--paper);
+    background:#25D366; color:#fff;
     border:none; border-radius:9px;
     padding:13px 14px;
+    /*margin-left: 6px;*/
     font-family:'Space Mono', monospace; font-size:0.78rem; font-weight:700;
     display:flex; align-items:center; justify-content:center; gap:8px;
     cursor:pointer; text-align:center;
@@ -486,7 +565,7 @@
     white-space:normal; word-break:break-word;
     line-height:1.3;
   }
-  .wa-btn:hover{background:#25d366; transform:translateY(-2px);}
+  .wa-btn:hover{background:#1ebe5d; transform:translateY(-2px);}
   .wa-btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
   .wa-btn svg{width:16px; height:16px; flex-shrink:0;}
   .tab-hint{
@@ -520,8 +599,7 @@
 
   @media (max-width:560px){
     .hero{padding-top:80px;}
-    section{padding:56px 16px;}
-    .pay-btn span, .wa-only-btn span{font-size:0.72rem;}
+    section{padding:108px 16px;}
   }
 
   /* ---------- Item modal ---------- */
@@ -551,7 +629,7 @@
   }
   .item-modal{
     position:relative; z-index:200;
-    width:100%; max-width:440px;
+    width:100%; max-width:480px;
     background:var(--char-2);
     border-radius:20px 20px 0 0;
     overflow:hidden;
@@ -574,7 +652,7 @@
     display:flex;
     pointer-events:auto;
     transform:translateY(0);
-    background-color:#195710;
+    background-color: #195710;
   }
   @media(min-width:600px){
     .item-modal.open{
@@ -591,8 +669,8 @@
   @media(min-width:600px){.modal-drag-handle{display:none;}}
   .modal-photo-wrap{
     position:relative; flex-shrink:0;
-    width:100%; aspect-ratio:12/9;
-    overflow:hidden;
+    width:100%; aspect-ratio:16/9;
+    /*overflow:hidden;*/
   }
   .modal-photo{
     width:100%; height:100%;
@@ -632,20 +710,14 @@
   .modal-desc{
     margin-top:12px; font-size:0.95rem; color:var(--paper-dim); line-height:1.65;
   }
-  /*.modal-footer{
-    padding:18px 22px 28px;
-    display:flex; align-items:center; gap:14px;
+  .modal-footer{
+    /*padding:18px 22px 28px;*/
+    padding: 14px 10px 12px 2px;
+    display:flex; align-items:center; gap:2px;
     border-top:1px solid var(--line);
     margin-top:20px;
     flex-shrink:0;
-  }*/
-    .modal-footer{
-        padding: 14px 10px 12px 2px;
-        display: flex; align-items: center;gap: 2px;
-        border-top: 1px solid var(--line);
-        margin-top: 20px;
-        flex-shrink: 0;
-    }
+  }
   .modal-price{
     font-family:'Fraunces', serif; font-size:1.4rem; font-weight:600;
     color:var(--ember); white-space:nowrap;
@@ -674,8 +746,7 @@
     flex:1;
     background:var(--annatto); color:var(--paper);
     border:none; border-radius:9px;
-    /*padding:13px 16px;*/
-    padding: 8px 14px;
+    padding:8px 14px;
     font-family:'Space Mono', monospace; font-size:0.85rem; font-weight:700;
     cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
     transition:background 0.15s ease, transform 0.15s ease;
@@ -683,150 +754,6 @@
   }
   .modal-add-btn:hover{background:var(--annatto-deep); transform:translateY(-1px);}
   .modal-add-btn.added{background:var(--leaf);}
-
-  /* ---------- Dual checkout buttons ---------- */
-  .pay-btn{
-    background:var(--annatto); color:var(--paper);
-    margin-bottom:8px;
-  }
-  .pay-btn:hover:not(:disabled){background:var(--annatto-deep); transform:translateY(-2px);}
-  .wa-only-btn{
-    /*background:rgba(232,220,200,0.08);*/
-    border:1px solid rgba(232,220,200,0.2);
-    color:var(--paper-dim);
-    font-size:0.78rem;
-  }
-  .wa-only-btn:hover:not(:disabled){border-color:#195710; color:#195710; transform:translateY(-1px);}
-
-  /* ---------- Payment checkout modal ---------- */
-  .pay-modal-scrim{
-    position:fixed; inset:0; z-index:300;
-    background:rgba(0,0,0,0); pointer-events:none;
-    transition:background 0.3s ease;
-  }
-  .pay-modal-scrim.open{background:rgba(0,0,0,0.8); pointer-events:auto;}
-  .pay-modal{
-    position:fixed; bottom:0; left:0; right:0; z-index:301;
-    background:var(--paper); color:var(--char);
-    border-radius:20px 20px 0 0;
-    transform:translateY(100%);
-    transition:transform 0.36s cubic-bezier(.2,.9,.25,1);
-    max-height:92svh;
-    display:none;
-    flex-direction:column;
-    pointer-events:none;
-    width:100%;
-    overflow:hidden;
-  }
-  .pay-modal.open{
-    display:flex;
-    pointer-events:auto;
-  }
-  @media(min-width:600px){
-    .pay-modal{
-      top:50%; bottom:auto; left:50%; right:auto;
-      transform:translate(-50%,-40%) scale(0.96);
-      opacity:0;
-      width:100%; max-width:500px;
-      border-radius:20px;
-      transition:transform 0.3s cubic-bezier(.2,.9,.25,1), opacity 0.25s ease;
-      max-height:90svh;
-    }
-    .pay-modal.open{
-      transform:translate(-50%,-50%) scale(1);
-      opacity:1;
-    }
-  }
-  .pay-modal.open{transform:translateY(0);}
-  .pay-modal-handle{
-    width:36px; height:4px; border-radius:2px;
-    background:rgba(28,20,16,0.15);
-    margin:14px auto 0; flex-shrink:0;
-  }
-  @media(min-width:600px){.pay-modal-handle{display:none;}}
-  .pay-modal-head{
-    padding:20px 22px 14px;
-    border-bottom:1.5px dashed rgba(28,20,16,0.15);
-    display:flex; justify-content:space-between; align-items:flex-start;
-    flex-shrink:0;
-  }
-  .pay-modal-head h3{font-family:'Fraunces',serif; font-size:1.3rem; font-weight:600; color:var(--char);}
-  .pay-modal-head .sub{font-family:'Space Mono',monospace; font-size:0.72rem; color:#6b5d4a; margin-top:3px;}
-  .pay-modal-close{
-    background:rgba(28,20,16,0.08); border:none; border-radius:50%;
-    width:30px; height:30px; font-size:0.95rem; cursor:pointer; color:var(--char);
-    display:flex; align-items:center; justify-content:center;
-    transition:background 0.15s;
-  }
-  .pay-modal-close:hover{background:var(--annatto); color:var(--paper);}
-  .pay-modal-body{
-    overflow-y:auto; flex:1;
-    padding:16px 22px 0;
-  }
-  .pay-order-line{
-    display:flex; justify-content:space-between;
-    font-size:0.9rem; padding:8px 0;
-    border-bottom:1px dotted rgba(28,20,16,0.12); color:#3a2e22;
-  }
-  .pay-order-line .name{font-weight:500;}
-  .pay-order-line .price{font-family:'Space Mono',monospace; font-size:0.85rem; flex-shrink:0; margin-left:12px;}
-  .pay-divider{
-    display:flex; justify-content:space-between; align-items:baseline;
-    margin:16px 0 4px; font-family:'Fraunces',serif;
-  }
-  .pay-divider .label{font-size:0.78rem; color:#6b5d4a; font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:0.06em;}
-  .pay-divider .total{font-size:1.5rem; font-weight:700; color:var(--char);}
-  .pay-methods{
-    display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;
-  }
-  .pay-badge{
-    display:flex; align-items:center; gap:6px;
-    background:rgba(28,20,16,0.06);
-    border:1px solid rgba(28,20,16,0.12);
-    border-radius:8px; padding:7px 11px;
-    font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700;
-    color:#3a2e22;
-  }
-  .pay-badge .dot{width:7px; height:7px; border-radius:50%; background:var(--leaf); flex-shrink:0;}
-  .pay-fee-note{
-    font-size:0.78rem; color:#8a7c66; margin:0 0 14px;
-    display:flex; align-items:center; gap:6px;
-    background:rgba(28,20,16,0.04); border-radius:8px; padding:9px 12px;
-  }
-  .pay-fee-note svg{flex-shrink:0; color:var(--leaf);}
-  .pay-modal-foot{
-    padding:14px 16px;
-    padding-bottom:max(16px, env(safe-area-inset-bottom, 16px));
-    flex-shrink:0;
-    border-top:1.5px dashed rgba(28,20,16,0.15);
-    background:var(--paper);
-  }
-  .pay-billplz-btn{
-    width:100%; padding:14px 14px;
-    background:var(--char); color:var(--paper);
-    border:none; border-radius:10px;
-    font-family:'Space Mono',monospace; font-size:0.82rem; font-weight:700;
-    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
-    transition:background 0.15s, transform 0.15s;
-    margin-bottom:10px;
-    white-space:normal; word-break:break-word;
-    line-height:1.3; text-align:center;
-    touch-action:manipulation;
-  }
-  .pay-billplz-btn:hover{background:var(--annatto); transform:translateY(-2px);}
-  .pay-wa-after{
-    width:100%; padding:12px 16px;
-    background:transparent; color:#6b5d4a;
-    border:1px solid rgba(28,20,16,0.18); border-radius:10px;
-    font-family:'Space Mono',monospace; font-size:0.78rem; font-weight:700;
-    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
-    transition:border-color 0.15s, color 0.15s;
-  }
-  .pay-wa-after:hover{border-color:var(--char); color:var(--char);}
-  .pay-security{
-    text-align:center; font-size:0.72rem; color:#8a7c66; margin-top:10px;
-    display:flex; align-items:center; justify-content:center; gap:5px;
-  }
 
   /* ---------- How to get paid (owner section) ---------- */
   .owner{background:var(--char); border-top:1px solid var(--line);}
@@ -867,6 +794,215 @@
   /* modal clickable — card body acts as trigger */
   .menu-card-name{transition:color 0.15s ease;}
   .spice{font-size:0.9em;}
+
+  /* ---------- Legal compliance section ---------- */
+  .legal{
+    background:var(--char); border-top:1px solid var(--line);
+    padding:64px 24px 80px;
+  }
+  .legal-wrap{max-width:920px; margin:0 auto;}
+  .legal-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:24px;
+    margin-top:32px;
+  }
+  @media(max-width:680px){.legal-grid{grid-template-columns:1fr;}}
+  .legal-card{
+    background:var(--char-2); border:1px solid var(--line);
+    border-radius:12px; padding:20px 18px;
+  }
+  .legal-card h3{
+    font-family:'Fraunces',serif; font-size:0.98rem; font-weight:600;
+    color:var(--paper); margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .legal-card p, .legal-card li{font-size:0.81rem; color:var(--paper-dim); line-height:1.65;}
+  .legal-card ul{padding-left:16px; margin-top:6px;}
+  .legal-card ul li{margin-bottom:4px;}
+  .legal-card .bm{
+    margin-top:10px; padding-top:10px; border-top:1px solid var(--line);
+    font-size:0.76rem; color:var(--paper-muted); line-height:1.55; font-style:italic;
+  }
+  .legal-full{
+    grid-column:1/-1; background:var(--char-2);
+    border:1px solid var(--line); border-radius:12px; padding:20px 18px;
+  }
+  .legal-full h3{
+    font-family:'Fraunces',serif; font-size:0.98rem; font-weight:600;
+    color:var(--paper); margin-bottom:10px; display:flex; align-items:center; gap:8px;
+  }
+  .legal-full p{font-size:0.81rem; color:var(--paper-dim); line-height:1.65; margin-bottom:6px;}
+  .legal-full p:last-child{margin-bottom:0;}
+  .legal-full .bm{
+    margin-top:12px; padding-top:12px; border-top:1px solid var(--line);
+    font-size:0.76rem; color:var(--paper-muted); line-height:1.55; font-style:italic;
+  }
+  .legal-tag{
+    display:inline-block; font-family:'Space Mono',monospace; font-size:0.66rem;
+    padding:2px 8px; border-radius:4px; margin-bottom:10px;
+    background:rgba(242,163,61,0.1); color:var(--ember);
+    text-transform:uppercase; letter-spacing:0.08em;
+  }
+  .footer-legal{
+    margin-top:10px; padding-top:10px; border-top:1px solid var(--line);
+    font-size:0.69rem; color:var(--paper-muted);
+    display:flex; flex-wrap:wrap; justify-content:center; gap:6px 14px;
+  }
+  .footer-legal a{color:var(--paper-muted); text-decoration:none;}
+  .footer-legal a:hover{color:var(--ember);}
+
+  /* ---------- Feedback system ---------- */
+  .feedback-section{
+    background:var(--char-2); border-top:1px solid var(--line);
+    padding:72px 24px 80px;
+  }
+  .feedback-wrap{max-width:920px; margin:0 auto;}
+  .testimonial-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:14px; margin-top:28px; margin-bottom:44px;
+  }
+  .testimonial-card{
+    background:var(--char); border:1px solid var(--line);
+    border-radius:12px; padding:18px 18px 16px;
+    display:flex; flex-direction:column; gap:8px;
+    animation:cardIn 0.35s ease both;
+  }
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .t-stars{display:flex; gap:3px;}
+  .t-star{color:var(--ember); font-size:1rem; line-height:1;}
+  .t-star.empty{color:rgba(232,220,200,0.15);}
+  .t-comment{font-size:0.9rem; color:var(--paper); line-height:1.6; font-style:italic; flex:1;}
+  .t-meta{display:flex; align-items:baseline; justify-content:space-between; margin-top:4px; gap:8px; flex-wrap:wrap;}
+  .t-author{font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--ember);}
+  .t-dish{font-size:0.72rem; color:var(--paper-muted);}
+  .t-date{font-family:'Space Mono',monospace; font-size:0.66rem; color:var(--paper-muted);}
+  .testimonial-empty{
+    grid-column:1/-1; text-align:center; padding:40px 20px;
+    color:var(--paper-muted); font-size:0.88rem; line-height:1.7;
+  }
+  .feedback-cta-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:14px;
+    background:var(--char); border:1px solid var(--line);
+    border-radius:14px; padding:22px 24px; margin-bottom:28px;
+  }
+  .feedback-cta-text h3{font-family:'Fraunces',serif; font-size:1.25rem; font-weight:600; color:var(--paper); margin-bottom:4px;}
+  .feedback-cta-text p{font-size:0.84rem; color:var(--paper-dim); line-height:1.5; max-width:40ch;}
+  .avg-rating-display{display:flex; align-items:center; gap:10px; flex-shrink:0;}
+  .avg-score{font-family:'Fraunces',serif; font-size:2.2rem; font-weight:700; color:var(--ember); line-height:1;}
+  .avg-meta{font-size:0.74rem; color:var(--paper-muted); line-height:1.6;}
+  .rating-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .rating-chip{
+    font-family:'Space Mono',monospace; font-size:0.7rem;
+    padding:5px 12px; border-radius:999px;
+    background:rgba(232,220,200,0.06); border:1px solid var(--line);
+    color:var(--paper-dim); cursor:pointer;
+    transition:background 0.15s, color 0.15s; touch-action:manipulation;
+  }
+  .rating-chip.active{background:rgba(242,163,61,0.15); border-color:rgba(242,163,61,0.4); color:var(--ember);}
+
+  /* Floating feedback button */
+  .feedback-fab{
+    position:fixed;
+    bottom:max(80px, calc(env(safe-area-inset-bottom,0px) + 80px));
+    left:16px; z-index:60;
+    background:var(--char-2); color:var(--ember);
+    border:1px solid rgba(242,163,61,0.35); border-radius:999px;
+    padding:10px 14px;
+    font-family:'Space Mono',monospace; font-weight:700; font-size:0.72rem;
+    display:flex; align-items:center; gap:6px; cursor:pointer;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4);
+    transition:background 0.15s, transform 0.15s, opacity 0.3s;
+    opacity:0; pointer-events:none; touch-action:manipulation;
+  }
+  .feedback-fab.show{opacity:1; pointer-events:auto;}
+  .feedback-fab:hover{background:var(--char); transform:translateY(-2px);}
+
+  /* Feedback modal */
+  .fb-scrim{
+    position:fixed; inset:0; z-index:310;
+    background:rgba(0,0,0,0); pointer-events:none;
+    display:none; transition:background 0.3s ease;
+  }
+  .fb-scrim.open{background:rgba(0,0,0,0.75); pointer-events:auto; display:block;}
+  .fb-modal{
+    position:fixed; bottom:0; left:0; right:0; z-index:311;
+    background:var(--paper); color:var(--char);
+    border-radius:20px 20px 0 0;
+    transform:translateY(100%);
+    transition:transform 0.36s cubic-bezier(.2,.9,.25,1);
+    max-height:92svh; display:flex; flex-direction:column;
+    overflow:hidden; pointer-events:none; width:100%;
+  }
+  @media(min-width:600px){
+    .fb-modal{
+      top:26%; bottom:auto; left:50%; right:auto;
+      width:100%; max-width:460px; border-radius:20px;
+      transform:translate(-50%,-40%) scale(0.96); opacity:0;
+      transition:transform 0.3s cubic-bezier(.2,.9,.25,1), opacity 0.25s ease;
+      max-height:90svh;
+    }
+    .fb-modal.open{transform:translate(-50%,-50%) scale(1); opacity:1;}
+  }
+  .fb-modal.open{transform:translateY(0); pointer-events:auto;}
+  .fb-handle{width:36px; height:4px; border-radius:2px; background:rgba(28,20,16,0.15); margin:12px auto 0; flex-shrink:0;}
+  @media(min-width:600px){.fb-handle{display:none;}}
+  .fb-head{
+    padding:16px 20px 12px; border-bottom:1.5px dashed rgba(28,20,16,0.15);
+    display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0;
+  }
+  .fb-head h3{font-family:'Fraunces',serif; font-size:1.2rem; font-weight:600; color:var(--char);}
+  .fb-head .sub{font-size:0.76rem; color:#6b5d4a; margin-top:3px;}
+  .fb-close{
+    background:rgba(28,20,16,0.08); border:none; border-radius:50%;
+    width:30px; height:30px; font-size:0.95rem; cursor:pointer; color:var(--char);
+    display:flex; align-items:center; justify-content:center; transition:background 0.15s; touch-action:manipulation;
+  }
+  .fb-close:hover{background:var(--annatto); color:var(--paper);}
+  .fb-body{overflow-y:auto; flex:1; padding:16px 20px 0; -webkit-overflow-scrolling:touch;}
+  .star-picker{display:flex; gap:8px; justify-content:center; margin:6px 0 14px;}
+  .star-pick{
+    font-size:2.2rem; cursor:pointer; line-height:1;
+    transition:transform 0.15s ease; user-select:none;
+    filter:grayscale(1) opacity(0.25); touch-action:manipulation;
+  }
+  .star-pick.lit{filter:none;}
+  .star-pick:hover{transform:scale(1.2);}
+  .star-label{text-align:center; font-size:0.8rem; color:#6b5d4a; margin:-6px 0 14px; min-height:18px; font-style:italic;}
+  .fb-field{margin-bottom:13px;}
+  .fb-label{display:block; font-size:0.76rem; font-weight:600; color:#3a2e22; margin-bottom:5px;}
+  .fb-input,.fb-select,.fb-textarea{
+    width:100%; background:#f5ede0;
+    border:1.5px solid rgba(28,20,16,0.12); border-radius:8px;
+    padding:10px 12px; color:var(--char); font-size:0.88rem;
+    font-family:'Work Sans',sans-serif; transition:border-color 0.15s; outline:none; resize:none;
+  }
+  .fb-input:focus,.fb-select:focus,.fb-textarea:focus{border-color:var(--annatto);}
+  .fb-textarea{min-height:82px; line-height:1.55;}
+  .fb-select option{background:#f5ede0;}
+  .fb-foot{
+    padding:12px 20px max(16px, calc(env(safe-area-inset-bottom,0px) + 12px));
+    border-top:1.5px dashed rgba(28,20,16,0.15); flex-shrink:0; background:var(--paper);
+  }
+  .fb-submit{
+    width:100%; padding:13px;
+    background:var(--annatto); color:var(--paper);
+    border:none; border-radius:9px;
+    font-family:'Space Mono',monospace; font-size:0.82rem; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:background 0.15s, transform 0.15s; touch-action:manipulation;
+  }
+  .fb-submit:hover{background:var(--annatto-deep); transform:translateY(-1px);}
+  .fb-submit:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+  .fb-hint{font-size:0.7rem; color:#8a7c66; margin-top:8px; text-align:center; line-height:1.5;}
+  .order-nudge{
+    margin-top:10px; padding:9px 14px;
+    background:rgba(122,139,94,0.12); border:1px solid rgba(122,139,94,0.22);
+    border-radius:8px; font-size:0.74rem; color:#6b5d4a;
+    text-align:center; line-height:1.5; display:none;
+  }
+  .order-nudge a{color:var(--annatto); font-weight:600; text-decoration:none; cursor:pointer;}
+  .order-nudge.show{display:block;}
 </style>
 </head>
 <body>
@@ -875,21 +1011,37 @@
 
 <!-- Top bar -->
 <div class="topbar">
-  <div class="brandmark"><span class="dot"></span> Manila Tambayan</div>
+  <div class="brandmark"><span class="dot"></span> Kabayan Tambayan</div>
   <button class="cart-pill" id="topCartBtn">
     Tab <span class="count mono" id="topCartCount">0</span>
   </button>
 </div>
 
-<!-- Hero -->
-<!-- Address: 25, Jalan Rosmerah 2/8, Taman Johor Jaya, 81100 Johor Bahru, Johor Darul Ta'zim, Malaysia -->
-<header class="hero">
-  <div class="logo"><img src="jpv-menu/jpv-logo.png"></div>
-  <div class="ember-field" id="emberField"></div>
+<!-- Fixed category nav — snaps under topbar when menu is in view -->
+<div class="menu-cat-nav" id="menuCatNav" aria-label="Menu categories">
+  <div class="menu-cat-nav-inner">
+    <button class="cat-pill active" data-cat="Makanan · Meal" onclick="scrollToGroup('Makanan · Meal',this)">
+      <span class="cat-dot"></span>Makanan
+    </button>
+    <button class="cat-pill" data-cat="Snek · Snacks" onclick="scrollToGroup('Snek · Snacks',this)">
+      <span class="cat-dot"></span>Snek
+    </button>
+    <button class="cat-pill" data-cat="Pastri · Pastries" onclick="scrollToGroup('Pastri · Pastries',this)">
+      <span class="cat-dot"></span>Pastri
+    </button>
+    <button class="cat-pill" data-cat="Minuman · Drinks" onclick="scrollToGroup('Minuman · Drinks',this)">
+      <span class="cat-dot"></span>Minuman
+    </button>
+  </div>
+</div>
 
-  <div class="eyebrow">Taman Johor Jaya, Johor Bahru &nbsp;·&nbsp; Open daily 11am–10pm</div>
+<!-- Hero -->
+<header class="hero">
+  <div class="ember-field" id="emberField"></div>
+  <div class="logo"><img src="jpv-menu/jpv-logo.png"></div>
+  <div class="eyebrow">Johor Jaya, Johor Bahru &nbsp;·&nbsp; Open daily 11am–10pm</div>
   <h1>A taste of home,<br><em>tap what you're craving</em>, <span style="color:#25d366;">order in WhatsApp.</span></h1>
-  <p class="sub">Real Filipino comfort food in the heart of JB — toast, brisket, pasta, chicken, all pork-free. Tap the tally board below, and your order lands straight in our WhatsApp. No app, no account, no delivery commission baked into the price.</p>
+  <p class="sub">Real Filipino comfort food in the heart of JB — toast, brisket, pasta, chicken, all pork-free. Build order, send it on WhatsApp, and we'll reply with an OCBC OneCollect DuitNow QR to scan and pay. No app to download, no platform commission, no fuss.</p>
   <div class="actions">
     <a href="#menu" class="btn btn-primary">Build order ↓</a>
     <a href="#info" class="btn btn-ghost">Hours &amp; location</a>
@@ -898,12 +1050,13 @@
     <div><b>Ready in</b>15–20 min</div>
     <div><b>Minimum order</b>None</div>
     <div><b>Ordering fee</b>RM0 — it's just a chat</div>
-    <div><b>Payment</b>FPX · DuitNow QR · TNG · GrabPay · Cash</div>
+    <div><b>Payment</b>DuitNow QR · TNG · GrabPay · PayNow (SG) · Cash</div>
   </div>
 </header>
 
 <!-- Menu -->
 <section class="menu" id="menu">
+
   <div class="section-head">
     <div class="eyebrow">The tally board</div>
     <h2>Tap what you're craving.</h2>
@@ -931,8 +1084,8 @@
     </div>
     <div class="why-card">
       <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l4-7h10l4 7-9 10z"/><path d="M3 12h18M9 5l3 17M15 5l-3 17"/></svg>
-      <h3>Zero platform fees</h3>
-      <p>WhatsApp's catalog and chat are free for both sides. What you see on the menu is what you pay — no 20% commission baked in.</p>
+      <h3>Pay via OCBC OneCollect DuitNow QR</h3>
+      <p>We generate a QR with the exact amount locked in and send it via WhatsApp. Save the image to your gallery, open your banking app, tap "Scan QR" → "Import from Gallery", select the image — done. Works on any phone, any Malaysian bank. No typing, no wrong amounts.</p>
     </div>
     <div class="why-card">
       <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
@@ -947,11 +1100,13 @@
   <div class="info-grid">
     <div>
       <div class="eyebrow">Find us</div>
-      <h2 style="font-size:1.8rem; margin-bottom:14px;">Manila Tambayan</h2>
+      <h2 style="font-size:1.8rem; margin-bottom:14px;">Kabayan Tambayan</h2>
       <p style="color:var(--paper-dim); line-height:1.7; max-width:40ch;">
-        Jalan Permas 10, Permas Jaya, 81750 Masai, Johor Bahru.<br>
-        A few minutes from the Permas Jaya CIQ, dine-in or order ahead for pickup.<br><br>
-        <span class="mono" style="font-size:0.85rem; color:var(--ember);">+639275340005</span>
+        25, Jalan Rosmerah 2/8, Taman Johor Jaya,<br>
+        81100 Johor Bahru, Johor Darul Ta'zim, Malaysia.<br>
+        Dine-in or order ahead for pickup.<br><br>
+        <span class="mono" style="font-size:0.85rem; color:var(--ember);">+60 17-720 1835</span><br>
+        <span class="mono" style="font-size:0.75rem; color:var(--paper-muted);">JPV INNOVENTION SDN. BHD. · 201801031682 (1293706W)</span>
       </p>
     </div>
     <div>
@@ -961,8 +1116,60 @@
   </div>
 </section>
 
+<!-- ═══════════ FEEDBACK SECTION ═══════════ -->
+<section class="feedback-section" id="feedback">
+  <div class="feedback-wrap">
+
+    <div class="eyebrow" style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--ember);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Customer Feedback</div>
+
+    <div class="feedback-cta-bar">
+      <div class="feedback-cta-text">
+        <h3>How was your experience?</h3>
+        <p>Every review helps us serve you better. Takes 30 seconds — your honest thoughts mean the world to a small Filipino kitchen in JB.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+        <div class="avg-rating-display">
+          <div class="avg-score" id="avgScore">—</div>
+          <div>
+            <div id="avgStars" style="display:flex;gap:2px;margin-bottom:3px;"></div>
+            <div class="avg-meta" id="avgMeta">No reviews yet</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="openFeedbackModal()" style="white-space:nowrap;">
+          ★ Leave a review
+        </button>
+      </div>
+    </div>
+
+    <div class="rating-filters" id="ratingFilters">
+      <button class="rating-chip active" data-filter="all" onclick="filterFeedback('all',this)">All reviews</button>
+      <button class="rating-chip" data-filter="5" onclick="filterFeedback('5',this)">★★★★★</button>
+      <button class="rating-chip" data-filter="4" onclick="filterFeedback('4',this)">★★★★+</button>
+      <button class="rating-chip" data-filter="3" onclick="filterFeedback('3',this)">★★★+</button>
+    </div>
+
+    <div class="testimonial-grid" id="testimonialGrid">
+      <div class="testimonial-empty">No reviews yet — be the first to share your experience! 🍽️</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Floating feedback FAB -->
+<button class="feedback-fab" id="feedbackFab" onclick="openFeedbackModal()">
+  ★ Rate us
+</button>
+
 <footer>
-  Manila Tambayan — demo built to show how a free WhatsApp ordering flow can work. Replace the phone number, menu, and photos with the real restaurant's details to launch.
+  JPV INNOVENTION SDN. BHD. (201801031682 / 1293706W) · Trading as Kabayan Tambayan · Johor Jaya, Johor Bahru · Payment via DuitNow Transfer · <a href="https://facebook.com/ManilaTabayanjb" target="_blank" rel="noopener" style="color:var(--ember); text-decoration:none;">Follow us on Facebook →</a>
+  <div class="footer-legal">
+    <a href="#legal">Privacy Policy</a>
+    <a href="#legal">Terms of Use</a>
+    <a href="#legal">Refund Policy</a>
+    <a href="#legal">Consumer Rights</a>
+    <a href="#feedback">Customer Reviews</a>
+    <span>© 2026 JPV INNOVENTION SDN. BHD. (trading as Kabayan Tambayan). All rights reserved.</span>
+  </div>
 </footer>
 
 <!-- Owner: How to get paid section -->
@@ -970,49 +1177,49 @@
   <div class="owner-grid">
     <div>
       <div class="eyebrow">For the restaurant owner</div>
-      <h2 style="font-size:1.9rem;">Get paid online in 3 steps.</h2>
-      <p style="color:var(--paper-dim); margin-top:12px; line-height:1.6; max-width:42ch;">Billplz is Malaysia's cheapest payment gateway for F&B. No monthly fee, no setup fee. From RM0.75 per transaction — FPX bank transfer, DuitNow QR, Touch 'n Go, GrabPay, all in one.</p>
+      <h2 style="font-size:1.9rem;">Get paid via OCBC OneCollect.</h2>
+      <p style="color:var(--paper-dim); margin-top:12px; line-height:1.6; max-width:42ch;">No API keys. No backend. No code to configure. When a customer sends their WhatsApp order, you open the OCBC OneCollect app, enter the total, and send them a QR code to scan. Payment lands in your OCBC account instantly.</p>
       <ol class="owner-steps">
         <li class="owner-step">
           <div>
-            <h4>Sign up at billplz.com</h4>
-            <p>Free Basic plan, no credit card required. Submit your SSM registration + business bank account. Approval typically within 1–3 business days.</p>
+            <h4>Open an OCBC Business Account</h4>
+            <p>You need an existing OCBC conventional or Islamic current account. Apply online at ocbc.com.my if you don't have one yet. This is the account your payments settle into.</p>
           </div>
         </li>
         <li class="owner-step">
           <div>
-            <h4>Create a Collection</h4>
-            <p>In your Billplz dashboard, create one Collection called "Manila Tambayan Orders". This gives you a collection ID you'll use to generate payment links per order.</p>
+            <h4>Download OCBC OneCollect Malaysia</h4>
+            <p>Search "OCBC OneCollect Malaysia" on Google Play or the App Store — make sure it has the blue tick. Register with your business mobile number, set a 6-digit PIN, and submit your account details. Approval takes up to 7 working days.</p>
           </div>
         </li>
         <li class="owner-step">
           <div>
-            <h4>Generate a Bill for each order</h4>
-            <p>When a WhatsApp order arrives, create a Bill in the dashboard (or via API) with the exact total and the customer's name. Billplz returns a link — paste it back into the same WhatsApp chat. Customer pays; you see it in your dashboard instantly.</p>
+            <h4>Generate a QR for each order</h4>
+            <p>When an order arrives on WhatsApp, open OCBC OneCollect, enter the exact total in MYR, and tap Generate QR. A Dynamic DuitNow QR appears with the amount pre-filled — the customer cannot pay the wrong amount. Screenshot it and send the image back to the customer in the same WhatsApp chat.</p>
           </div>
         </li>
         <li class="owner-step">
           <div>
-            <h4>Funds settle next business day</h4>
-            <p>FPX payments settle to your Malaysian bank account the next business day. No waiting 7 days like PayPal. Cash flow stays healthy.</p>
+            <h4>Customer pays — you get an instant push notification</h4>
+            <p>The customer saves your QR image, opens their banking app, taps Scan QR → Import from Gallery, selects the image, and confirms. You receive a push notification and audible alert on the OCBC OneCollect app the moment payment is confirmed — no need to check manually. Singapore customers can request a PayNow QR instead and pay in SGD from their Singapore bank; you receive the equivalent in MYR. Only start cooking after the notification arrives.</p>
           </div>
         </li>
         <li class="owner-step">
           <div>
             <h4>Set up 3 WhatsApp Quick Replies</h4>
-            <p>In WhatsApp Business → Settings → Quick Replies, save these 3 canned messages. You'll send one of them on every single order — they take one tap instead of typing.</p>
+            <p>In WhatsApp Business → Settings → Quick Replies, save these 3 canned messages. You'll send one on every single order — they take one tap instead of typing.</p>
             <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
               <div style="background:rgba(232,220,200,0.06); border:1px solid rgba(232,220,200,0.14); border-radius:8px; padding:10px 13px;">
                 <div style="font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--ember); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Shortcut: /confirm</div>
-                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">✅ Confirmed! Your order is being prepared and will be ready in approximately 20 minutes. Please head over when you're ready — see you soon!</div>
+                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">✅ Order received! Please scan the QR code below to pay. We'll start preparing as soon as payment is confirmed. Thank you!</div>
               </div>
               <div style="background:rgba(232,220,200,0.06); border:1px solid rgba(232,220,200,0.14); border-radius:8px; padding:10px 13px;">
                 <div style="font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--ember); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Shortcut: /ready</div>
-                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">🍱 Your order is ready for pickup at our counter! Please come collect at your earliest convenience. Thank you for ordering from Manila Tambayan!</div>
+                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">🍱 Your order is ready for pickup at our counter! Please come collect at your earliest convenience. Thank you for ordering from Kabayan Tambayan!</div>
               </div>
               <div style="background:rgba(232,220,200,0.06); border:1px solid rgba(232,220,200,0.14); border-radius:8px; padding:10px 13px;">
                 <div style="font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--ember); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Shortcut: /nopayment</div>
-                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">⚠️ Hi! We couldn't find a matching payment for your order. Could you please send us your Billplz transaction ID or a screenshot of your payment? We'll confirm and start preparing right away. Thank you!</div>
+                <div style="font-size:0.82rem; color:var(--paper-dim); line-height:1.55;">⚠️ Hi! We haven't received payment confirmation yet. Could you please scan the QR code we sent and complete the payment? We'll start preparing right away once confirmed. Thank you!</div>
               </div>
             </div>
           </div>
@@ -1020,53 +1227,57 @@
       </ol>
     </div>
     <div>
-      <div class="eyebrow">Gateway comparison · Malaysia 2026</div>
+      <div class="eyebrow">Why OCBC OneCollect · JB 2026</div>
       <div class="owner-compare">
         <div class="compare-head">
-          <span>Provider</span>
-          <span>FPX fee</span>
+          <span>Feature</span>
+          <span>Detail</span>
         </div>
         <div class="compare-row">
           <div>
-            <div class="provider">✦ Billplz</div>
-            <div class="methods">FPX · DuitNow QR · TNG · GrabPay · BNPL · Cards</div>
+            <div class="provider">✦ Transaction fee</div>
           </div>
-          <div class="fee best">RM0.75 flat</div>
+          <div class="fee best">RM0 — free</div>
         </div>
         <div class="compare-row">
           <div>
-            <div class="provider">Toyyibpay</div>
-            <div class="methods">FPX · e-wallets (limited)</div>
+            <div class="provider">Monthly fee</div>
           </div>
-          <div class="fee">RM1.00 flat</div>
+          <div class="fee best">RM0 — free</div>
         </div>
         <div class="compare-row">
           <div>
-            <div class="provider">SenangPay</div>
-            <div class="methods">FPX · Cards · e-wallets</div>
+            <div class="provider">Settlement speed</div>
+            <div class="methods">DuitNow QR</div>
           </div>
-          <div class="fee">RM1.00 or 1.5%</div>
+          <div class="fee best">Instant</div>
         </div>
         <div class="compare-row">
           <div>
-            <div class="provider">HitPay</div>
-            <div class="methods">FPX · DuitNow · 50+ methods</div>
+            <div class="provider">Singapore PayNow</div>
+            <div class="methods">SGD → MYR, no forex account needed</div>
           </div>
-          <div class="fee">1.4% + RM0.50</div>
+          <div class="fee best">✓ Included</div>
         </div>
         <div class="compare-row">
           <div>
-            <div class="provider">Stripe</div>
-            <div class="methods">Cards · FPX only (no DuitNow QR, no TNG)</div>
+            <div class="provider">API key / backend needed</div>
           </div>
-          <div class="fee">3% + RM1.00</div>
+          <div class="fee best">None</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <div class="provider">Payment methods</div>
+            <div class="methods">All DuitNow banks · TNG · GrabPay · Boost · Alipay+ · UnionPay · QRIS · PromptPay</div>
+          </div>
+          <div class="fee">QR scan</div>
         </div>
         <div style="margin-top:16px; font-size:0.76rem; color:var(--paper-dim); line-height:1.5;">
-          All plans above have zero setup fee and zero monthly fee unless noted. Fees sourced from provider pricing pages, June 2026 — verify directly before signing up.
+          Requires an OCBC Business current account. Available to Malaysian and Singapore merchants. Cross-border SGD payments unique to OCBC in Malaysia. Verify current terms at ocbc.com.my.
         </div>
       </div>
-      <a href="https://billplz.com/join/business" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:28px; display:inline-flex; text-decoration:none;">
-        Sign up for Billplz →
+      <a href="https://www.ocbc.com.my/business-banking/go-digital/one-collect" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:28px; display:inline-flex; text-decoration:none;">
+        Learn more about OCBC OneCollect →
       </a>
     </div>
   </div>
@@ -1083,22 +1294,21 @@
     <button class="tab-close" id="tabClose" aria-label="Close order tab">✕</button>
   </div>
   <div class="order-tab-items" id="tabItems">
-    <div class="tab-empty">Still empty.<br>Tap items on the tally board to add them here.</div>
+    <div class="tab-empty">Wala pay laman.<br>Tap items on the tally board to add them here.</div>
   </div>
   <div class="order-tab-foot">
     <div class="tab-total-row">
       <span class="label">Total</span>
       <span class="amount mono" id="tabTotal">RM0</span>
     </div>
-    <button class="wa-btn pay-btn" id="payNowBtn" disabled>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-      <span>Pay via Billplz · FPX / DuitNow / TNG</span>
-    </button>
-    <button class="wa-btn wa-only-btn" id="waSendBtn" disabled>
+    <button class="wa-btn" id="waSendBtn" disabled>
       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1.1-.1.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5.1-1.3c1.4.8 3.1 1.3 4.9 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.3.9.9-3.2-.2-.3C4 14.9 3.5 13.5 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
-      <span id="waBtnLabel">WhatsApp only (pay on pickup)</span>
+      <span>Send order — we'll WhatsApp you a DuitNow QR to pay</span>
     </button>
-    <div class="tab-hint">Billplz accepts FPX, DuitNow QR, Touch 'n Go, GrabPay — from RM0.75/txn, no monthly fee.</div>
+    <div class="tab-hint">We'll send a DuitNow QR via WhatsApp. Save it to your gallery → open your banking app → Scan QR → Import from Gallery. Amount is pre-filled — just confirm and pay.</div>
+    <div class="order-nudge" id="orderNudge">
+      Ordered with us before? <a onclick="closeFeedbackModal();openFeedbackModal()">Leave a review ★</a> — it means a lot to our team.
+    </div>
   </div>
 </aside>
 
@@ -1107,44 +1317,164 @@
   <span class="count" id="floatingCount">0</span>
 </button>
 
-<!-- Payment checkout modal -->
-<div class="pay-modal-scrim" id="payModalScrim"></div>
-<div class="pay-modal" id="payModal" role="dialog" aria-modal="true" aria-label="Payment checkout">
-  <div class="pay-modal-handle"></div>
-  <div class="pay-modal-head">
-    <div>
-      <h3>Pay your order</h3>
-      <div class="sub" id="payModalSub">0 items</div>
-    </div>
-    <button class="pay-modal-close" id="payModalClose" aria-label="Close">✕</button>
+
+<!-- ═══════════ LEGAL COMPLIANCE SECTION ═══════════ -->
+<section class="legal" id="legal">
+  <div class="legal-wrap">
+
+    <div class="eyebrow" style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--ember);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Legal &amp; Compliance</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:1.8rem;color:var(--paper);max-width:28ch;line-height:1.1;">Your rights and our commitments — required under Malaysian law.</h2>
+    <p style="font-size:0.85rem;color:var(--paper-dim);margin-top:10px;max-width:58ch;line-height:1.6;">Kabayan Tambayan complies with applicable Malaysian laws governing online food ordering, consumer protection, and personal data. The following disclosures are required under the Electronic Commerce Act 2006, Consumer Protection Act 1999, Personal Data Protection Act 2010 (as amended 2024), and the Communications and Multimedia Act 1998.</p>
+
+    <div class="legal-grid">
+
+      <!-- 1. Business Identification -->
+      <div class="legal-card">
+        <div class="legal-tag">Companies Act 2016 · Electronic Commerce Act 2006</div>
+        <h3><span class="licon">🏢</span> Business Identification</h3>
+        <p>
+          <strong style="color:var(--paper)">Registered Company Name:</strong><br>
+          JPV INNOVENTION SDN. BHD.<br><br>
+          <strong style="color:var(--paper)">Trading As:</strong><br>
+          Kabayan Tambayan<br><br>
+          <strong style="color:var(--paper)">Company Registration No.:</strong><br>
+          201801031682 (1293706W)<br><br>
+          <strong style="color:var(--paper)">Date of Incorporation:</strong><br>
+          3 September 2018<br><br>
+          <strong style="color:var(--paper)">Registered Business Activities:</strong><br>
+          Fast-Food Restaurants · Other Business Support Service Activities · Export and Import of a Variety of Goods<br><br>
+          <strong style="color:var(--paper)">Operating Address:</strong><br>
+          25, Jalan Rosmerah 2/8, Taman Johor Jaya,<br>
+          81100 Johor Bahru, Johor Darul Ta'zim, Malaysia.<br><br>
+          <strong style="color:var(--paper)">Tel / WhatsApp:</strong><br>
+          +60 17-720 1835
+        </p>
+        <p style="margin-top:10px;">This website is operated by JPV INNOVENTION SDN. BHD. (trading as Kabayan Tambayan), a private limited company incorporated in Malaysia under the Companies Act 2016 and licensed by Majlis Bandaraya Iskandar Puteri (MBIP) to operate food and beverage services in Johor Bahru.</p>
+        <div class="bm">Nama Syarikat Berdaftar: JPV INNOVENTION SDN. BHD. (berniaga sebagai Kabayan Tambayan). No. Pendaftaran Syarikat: 201801031682 (1293706W). Syarikat ini diperbadankan di Malaysia di bawah Akta Syarikat 2016 pada 3 September 2018.</div>
+      </div>
+
+      <!-- 2. Halal & Food Safety -->
+      <div class="legal-card">
+        <div class="legal-tag">Food Hygiene Regulations 2009</div>
+        <h3><span class="licon">🍽️</span> Food Safety &amp; Halal Status</h3>
+        <p>Our kitchen serves <strong style="color:var(--paper)">no pork and no lard</strong>. Every dish uses chicken, beef, or fish. We welcome Muslim customers and take cross-contamination seriously.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">Important:</strong> Kabayan Tambayan is <strong style="color:var(--paper)">not yet JAKIM halal-certified</strong> and does not display a halal logo in compliance with Jabatan Agama Islam Johor (JAINJ) requirements. Customers with strict halal dietary requirements are welcome to contact us directly with any questions about ingredients or preparation methods before ordering.</p>
+        <p style="margin-top:8px;">All food handlers hold valid KKM-approved Food Handler certificates and current typhoid vaccinations as required under the Food Hygiene Regulations 2009.</p>
+        <div class="bm">Dapur kami tidak menggunakan daging babi atau lemak babi. Namun begitu, premis ini belum mendapat sijil halal JAKIM.</div>
+      </div>
+
+      <!-- 3. Privacy Policy -->
+      <div class="legal-full">
+        <div class="legal-tag">Personal Data Protection Act 2010 (Amended 2024)</div>
+        <h3><span class="licon">🔒</span> Privacy Policy — Dasar Privasi</h3>
+        <p><strong style="color:var(--paper)">What personal data we collect:</strong> When you place an order via WhatsApp, we receive your name, phone number, order details, preferred pickup or dine-in time, and any other information you choose to include in your message.</p>
+        <p><strong style="color:var(--paper)">Why we collect it:</strong> Solely to process, confirm, and prepare your food order, and to send you a DuitNow payment reference or order confirmation via WhatsApp.</p>
+        <p><strong style="color:var(--paper)">Who has access:</strong> Your data is accessible only to JPV INNOVENTION SDN. BHD. staff involved in preparing and fulfilling your order. We do not sell, share, rent, or disclose your personal data to any third party.</p>
+        <p><strong style="color:var(--paper)">How long we keep it:</strong> Order records are retained for up to 12 months for accounting and dispute resolution purposes, then deleted.</p>
+        <p><strong style="color:var(--paper)">Your rights under PDPA 2024:</strong> You have the right to access, correct, or request deletion of your personal data held by us. You may also withdraw consent to data processing at any time. To exercise these rights, contact us via WhatsApp at +60 17-720 1835 or email XXXXXXXX@gmail.com.</p>
+        <p><strong style="color:var(--paper)">Data security:</strong> This website operates over HTTPS (SSL/TLS encryption). Your order is transmitted via WhatsApp, which uses end-to-end encryption. We do not store payment details — DuitNow transfers are processed directly between your bank and our OCBC account.</p>
+        <p><strong style="color:var(--paper)">Cookies:</strong> This website does not use tracking cookies, advertising cookies, or any third-party analytics. The only data processed is what you voluntarily include in your WhatsApp order message.</p>
+        <div class="bm">Dasar Privasi (Ringkasan BM): Kami mengumpul nama, nombor telefon dan butiran pesanan anda semata-mata untuk memproses pesanan makanan anda melalui WhatsApp. Data anda tidak dikongsi dengan mana-mana pihak ketiga. Anda berhak untuk mengakses, membetulkan atau meminta pemadaman data anda pada bila-bila masa dengan menghubungi kami melalui WhatsApp. Laman web ini beroperasi dengan penyulitan HTTPS dan tidak menggunakan kuki penjejakan.</div>
+      </div>
+
+      <!-- 4. Terms of Use -->
+      <div class="legal-full">
+        <div class="legal-tag">Contracts Act 1950 · Electronic Commerce Act 2006</div>
+        <h3><span class="licon">📋</span> Terms of Use — Terma Penggunaan</h3>
+        <p><strong style="color:var(--paper)">Acceptance:</strong> By using this website and placing an order, you agree to these terms. These terms are governed by the laws of Malaysia and any disputes shall be subject to the jurisdiction of Malaysian courts.</p>
+        <p><strong style="color:var(--paper)">Order confirmation:</strong> Your order is confirmed only after you receive a WhatsApp reply from JPV INNOVENTION SDN. BHD. staff confirming acceptance and payment. Sending a WhatsApp message does not by itself constitute a binding order — confirmation by our staff is required.</p>
+        <p><strong style="color:var(--paper)">Menu accuracy:</strong> We endeavour to ensure menu items, descriptions, and prices are accurate. JPV INNOVENTION SDN. BHD. (Kabayan Tambayan) reserves the right to correct pricing errors, substitute unavailable ingredients with equivalent alternatives, or decline orders for items that are sold out. If a substitution or unavailability affects your order, we will notify you via WhatsApp before preparation begins.</p>
+        <p><strong style="color:var(--paper)">Intellectual property:</strong> All content on this website including the JPV INNOVENTION SDN. BHD. and Kabayan Tambayan names, menu design, and written descriptions is protected under the Copyright Act 1987 (Malaysia). Reproduction without written permission is prohibited.</p>
+        <p><strong style="color:var(--paper)">Limitation of liability:</strong> JPV INNOVENTION SDN. BHD. is not liable for any indirect or consequential loss arising from the use of this website or delayed order fulfilment due to circumstances beyond our control.</p>
+        <p><strong style="color:var(--paper)">Governing law:</strong> These terms are governed by the laws of Malaysia. The Electronic Commerce Act 2006 governs the formation and validity of contracts made through this website.</p>
+        <div class="bm">Terma Penggunaan (Ringkasan BM): Dengan menggunakan laman web ini, anda bersetuju dengan terma-terma ini yang ditadbir oleh undang-undang Malaysia. Pesanan anda hanya disahkan selepas kami membalas melalui WhatsApp. Semua kandungan laman web ini dilindungi di bawah Akta Hak Cipta 1987.</div>
+      </div>
+
+      <!-- 5. Refund & Cancellation -->
+      <div class="legal-card">
+        <div class="legal-tag">Consumer Protection Act 1999</div>
+        <h3><span class="licon">↩️</span> Refund &amp; Cancellation Policy</h3>
+        <p><strong style="color:var(--paper)">Before confirmation:</strong> You may cancel your order at any time before receiving a WhatsApp confirmation from our staff. No charge applies.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">After confirmation and payment:</strong> Once payment is received and we have confirmed your order, cancellations are not accepted as food preparation begins immediately.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">Refunds we will issue:</strong> If we are unable to fulfil a confirmed and paid order for any reason on our part, a full refund will be processed via DuitNow transfer within 3 business days to the same account used for payment.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">Food quality issues:</strong> If you believe your order does not meet acceptable standards, contact us via WhatsApp within 1 hour of collection. We will assess each case fairly and in accordance with the Consumer Protection Act 1999.</p>
+        <div class="bm">Polisi Bayaran Balik: Pembatalan dibenarkan sebelum pengesahan pesanan. Setelah pembayaran diterima dan pesanan disahkan, pembatalan tidak diterima. Bayaran balik penuh akan diproses dalam 3 hari bekerja jika kami tidak dapat memenuhi pesanan anda.</div>
+      </div>
+
+      <!-- 6. Consumer Rights -->
+      <div class="legal-card">
+        <div class="legal-tag">Consumer Protection Act 1999 · ETT Regulations 2024</div>
+        <h3><span class="licon">⚖️</span> Consumer Rights &amp; Complaints</h3>
+        <p>As a consumer in Malaysia, you are protected under the <strong style="color:var(--paper)">Consumer Protection Act 1999</strong> and the <strong style="color:var(--paper)">Consumer Protection (Electronic Trade Transactions) Regulations 2024</strong>.</p>
+        <ul>
+          <li>You have the right to accurate product information and fair pricing</li>
+          <li>You have the right to lodge a complaint if goods are not as described</li>
+          <li>You may seek redress through the <strong style="color:var(--paper)">Tribunal for Consumer Claims Malaysia</strong> for disputes up to RM50,000</li>
+        </ul>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">How to raise a complaint with us:</strong> Contact us directly via WhatsApp at +60 17-720 1835. We aim to resolve all complaints within 2 business days.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">Escalation:</strong> If unresolved, you may contact the Ministry of Domestic Trade and Consumer Affairs (KPDNHEP) at <strong style="color:var(--paper)">1800-886-800</strong> or file a claim at <strong style="color:var(--paper)">etribunal.kpdnhep.gov.my</strong>.</p>
+        <div class="bm">Hak Pengguna: Anda dilindungi di bawah Akta Perlindungan Pengguna 1999. Untuk aduan, hubungi kami melalui WhatsApp atau KPDNHEP di 1800-886-800.</div>
+      </div>
+
+      <!-- 7. Content & Advertising Compliance -->
+      <div class="legal-card">
+        <div class="legal-tag">Communications &amp; Multimedia Act 1998</div>
+        <h3><span class="licon">📡</span> Content Compliance</h3>
+        <p>All content on this website complies with the <strong style="color:var(--paper)">Communications and Multimedia Act 1998</strong> and the Malaysian Communications and Multimedia Content Code 2022.</p>
+        <ul>
+          <li>No false, misleading, or offensive content is published</li>
+          <li>No alcohol, tobacco, gambling, or prohibited product advertising</li>
+          <li>Menu descriptions are accurate to the best of our knowledge</li>
+          <li>Prices displayed are in Malaysian Ringgit (MYR/RM) and are inclusive of all applicable charges</li>
+        </ul>
+        <p style="margin-top:8px;"><strong style="color:var(--paper)">Pricing & Tax:</strong> All prices displayed are in Malaysian Ringgit (MYR/RM) and are inclusive of all applicable charges. Kabayan Tambayan's current annual revenue is below the RM500,000 SST (Sales and Service Tax) registration threshold under the Sales Tax Act 2018 and Service Tax Act 2018. No SST is currently charged on orders. This will be updated if the threshold is exceeded.</p>
+        <p style="margin-top:8px;">To report inaccurate content, contact us via WhatsApp at +60 17-720 1835.</p>
+        <div class="bm">Semua kandungan laman web ini mematuhi Akta Komunikasi dan Multimedia 1998 dan Kod Kandungan 2022.</div>
+      </div>
+
+      <!-- 8. Copyright -->
+      <div class="legal-card">
+        <div class="legal-tag">Copyright Act 1987</div>
+        <h3><span class="licon">©</span> Copyright Notice</h3>
+        <p>© 2026 JPV INNOVENTION SDN. BHD. (trading as Kabayan Tambayan). All rights reserved.</p>
+        <p style="margin-top:8px;">All content on this website — including but not limited to the business name, menu descriptions, layout, and design — is protected under the <strong style="color:var(--paper)">Copyright Act 1987 (Malaysia)</strong> and the <strong style="color:var(--paper)">Trade Marks Act 2019 (Malaysia)</strong>.</p>
+        <p style="margin-top:8px;">Reproduction, distribution, or republication of any content from this website without prior written permission from JPV INNOVENTION SDN. BHD. is strictly prohibited.</p>
+        <div class="bm">© 2026 JPV INNOVENTION SDN. BHD. (Kabayan Tambayan). Semua hak terpelihara di bawah Akta Hak Cipta 1987 Malaysia.</div>
+      </div>
+
+    </div><!-- /legal-grid -->
+
+    <p style="font-size:0.75rem;color:var(--paper-muted);margin-top:28px;line-height:1.6;max-width:72ch;">
+      Last reviewed: June 2026. These disclosures are provided in compliance with Malaysian law and are reviewed at least annually. JPV INNOVENTION SDN. BHD. reserves the right to update these policies at any time. Continued use of this website following any updates constitutes acceptance of the revised terms. For legal inquiries, contact: +60 17-720 1835.
+    </p>
+
   </div>
-  <div class="pay-modal-body" id="payModalBody">
-    <!-- order lines injected by JS -->
-  </div>
-  <div class="pay-modal-foot">
-    <button class="pay-billplz-btn" id="billplzBtn">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-      Pay <span id="billplzTotal">RM0</span> via Billplz
-    </button>
-    <button class="pay-wa-after" id="waAfterPayBtn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1.1-.1.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5.1-1.3c1.4.8 3.1 1.3 4.9 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.3.9.9-3.2-.2-.3C4 14.9 3.5 13.5 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
-      Already paid? Send order to WhatsApp
-    </button>
-    <div class="pay-security">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l7 4v6c0 4.4-3 8.5-7 10-4-1.5-7-5.6-7-10V6l7-4z"/></svg>
-      Secured by Billplz · PayNet · Bank Negara Malaysia
-    </div>
-  </div>
-</div>
+</section>
 
 <footer>
-  Manila Tambayan · Permas Jaya, Johor Bahru · Payment powered by Billplz (RM0.75/txn, no monthly fee)
-  &nbsp;·&nbsp; <a href="https://facebook.com/ManilaTabayanjb" target="_blank" rel="noopener" style="color:var(--ember); text-decoration:none;">Follow us on Facebook →</a>
+  JPV INNOVENTION SDN. BHD. (trading as Kabayan Tambayan) · 25, Jalan Rosmerah 2/8, Taman Johor Jaya, 81100 Johor Bahru · Co. Reg. No. 201801031682 (1293706W) · Payment via OCBC OneCollect DuitNow QR
+  <div class="footer-legal">
+    <a href="#legal">Privacy Policy</a>
+    <span>·</span>
+    <a href="#legal">Terms of Use</a>
+    <span>·</span>
+    <a href="#legal">Refund Policy</a>
+    <span>·</span>
+    <a href="#legal">Consumer Rights</a>
+    <span>·</span>
+    <a href="https://facebook.com/ManilaTabayanjb" target="_blank" rel="noopener">Follow us on Facebook</a>
+    <span>·</span>
+    <span>© 2026 JPV INNOVENTION SDN. BHD. (trading as Kabayan Tambayan). All rights reserved.</span>
+  </div>
 </footer>
 
 <script>
   // ---------------- Data ----------------
+  /*const RESTAURANT_PHONE = "60177201835"; // Malaysia country code 60 + number, no + or spaces
+  const DUITNOW_ID       = "60177201835"; // Your DuitNow registered phone/business no — same format*/
   const RESTAURANT_PHONE = "639275340005"; // Malaysia country code 60 + number, no + or spaces
+  const DUITNOW_ID       = "639275340005"; // Your DuitNow registered phone/business no — same format
+  const DUITNOW_NAME     = "Kabayan Tambayan"; // Registered DuitNow account name
   const MYR = n => "RM" + n.toLocaleString("en-MY", {minimumFractionDigits: 0});
 
   const MENU = [
@@ -1171,39 +1501,151 @@
       ]
     },
     {
-      group: "Sabaw · Soups & Sour",
-      tag: "",
+      group: "Snek · Snacks",
+      tag: "Keeping Your Appetite",
       items: [
-        { id:"sinigang", name:"Sinigang na Isda", spice:"", desc:"Tamarind sour fish soup, kangkong, radish, string beans.", price:23,
-          photo:"https://www.yummykitchentv.com/wp-content/uploads/2022/10/Sinigang-na-Bangus-5.jpg" },
-        { id:"bulalo", name:"Bulalo", spice:"", desc:"Beef shank and bone marrow soup, corn, cabbage.", price:28,
-          photo:"https://cupofyum.com/wp-content/uploads/2022/10/Filipino-Bulalo-1.jpg" },
+        { id:"cheesesticks", name:"Special Cheese Sticks", spice:"", desc:"Just irresistably good. Available Flavors: Jalapeño, Chicken Ham, Ube, and Chocolate", price:4,
+          photo:"jpv-menu/snack/SNACK-CheeseStick.png" },
+        { id:"chickenchop", name:"Fried Chicken Chop", spice:"🌶️", desc:"One bite and you'll be hooked! Available Sauces: CC1 Thai Sweet & Chili Sauce, CC2 Mushroom Black Pepper Sauce'.", price:12,
+          photo:"jpv-menu/snack/SNACK-ChickenChop.png" },
+        { id:"chickenpopcorn", name:"Flavored Chicken Popcorn", spice:"🌶️", desc:"FLAVORS AVAILABLE: FCP1 Barbecue, FCP2 Chili Barbecue, FCP3 Chesse, FCP4 Sour Cheese, FCP5 Sour Cream, FCP6 Sweet Corn", price:8,
+          photo:"jpv-menu/snack/SNACK-ChickenPopcorn.png" },
+        { id:"ffries", name:"Flavored Fries Solo", spice:"🌶️", desc:"FLAVORS AVAILABLE: F1 Chesse, F2 Sour Cream, F3 Sour Cheese, F4 Barbecue, F5 Chili Barbecue, F6 Sweet Corn", price:4,
+          photo:"jpv-menu/snack/SNACK-FlavoredFries.png" },
+        { id:"ffries2", name:"Flavored Fries Duo", spice:"🌶️", desc:"FLAVORS AVAILABLE: F1 Chesse, F2 Sour Cream, F3 Sour Cheese, F4 Barbecue, F5 Chili Barbecue, F6 Sweet Corn", price:9,
+          photo:"jpv-menu/snack/SNACK-FlavoredFries.png" },
+        { id:"frieddumpling", name:"FD1 Fried Dumplings", spice:"🌶️", desc:"LOADED WITH FRESH CHICKEN (5 Pieces)", price:7,
+          photo:"jpv-menu/snack/SNACK-FriedDumpling.png" },
+        { id:"springroll", name:"SR1 Fried Spring Roll", spice:"🌶️", desc:"Filled with Chicken and Veggies (3 Pieces)", price:8,
+          photo:"jpv-menu/snack/SNACK-SpringRoll.png" },
       ]
     },
     {
-      group: "Manila Tambayan Specials",
+      group: "Pastri · Pastries",
       tag: "house favorites",
       items: [
-        { id:"karekare", name:"Kare-Kare", spice:"", desc:"Beef stew in peanut sauce, eggplant, long beans, bagoong on the side.", price:27,
-          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2020/03/kare-kare-2.jpg" },
-        { id:"lumpia", name:"Lumpiang Shanghai (10 pcs)", spice:"", desc:"Crispy fried chicken-and-vegetable spring rolls, sweet chili dip.", price:14,
-          photo:"https://thefoodietakesflight.com/wp-content/uploads/2020/09/Lumpiang-Shanghai-12.jpg" },
-        { id:"pancit", name:"Pancit Bihon", spice:"", desc:"Stir-fried rice noodles, chicken, carrots, cabbage.", price:16,
-          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2019/08/pancit-bihon-3.jpg" },
-        { id:"tortang", name:"Tortang Talong", spice:"", desc:"Grilled eggplant omelette, the Pinoy breakfast staple.", price:12,
-          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2015/07/tortang-talong-4.jpg" },
+        { id:"DC1-1pc", name:"DC1 Pistachio (1 pc)", spice:"", desc:"Pistachio", price:7,
+          photo:"jpv-menu/pastry/PASTRY-DCC.png" },
+        { id:"DC1-3pc", name:"DC1 Pistachio (3 pcs)", spice:"", desc:"Pistachio", price:20,
+          photo:"jpv-menu/pastry/PASTRY-DCC.png" },
+        { id:"DC2-1pc", name:"DC2 Matcha-Pistachio (1 pc)", spice:"", desc:"Matcha-Pistachio", price:7,
+          photo:"jpv-menu/pastry/PASTRY-DCC.png" },
+        { id:"DC2-3pc", name:"DC2 Matcha-Pistachio (3 pcs)", spice:"", desc:"Matcha-Pistachio", price:20,
+          photo:"jpv-menu/pastry/PASTRY-DCC.png" },
+        { id:"DC3-1pc", name:"DC3 Biscoff (1 pc)", spice:"", desc:"Biscoff", price:7,
+          photo:"jpv-menu/pastry/PASTRY-DCC.png" },
+        { id:"DC3-3pc", name:"DC3 Biscoff (3 pcs)", spice:"", desc:"Biscoff", price:20,
+          photo:"jpv-menu/pastry/PASTRY-DCC.png" },
+        { id:"WF1", name:"WF1 Chocolate Classic", spice:"", desc:"Chocolate Classic", price:4,
+          photo:"jpv-menu/pastry/PASTRY-WSC-RM4.png" },
+        { id:"WF2", name:"WF2 Peanut Butter Classic", spice:"", desc:"Peanut Butter Classic", price:4,
+          photo:"jpv-menu/pastry/PASTRY-WSC-RM4.png" },
+        { id:"WF3", name:"WF3 Sri Kaya Classic", spice:"", desc:"Sri Kaya Classic", price:4,
+          photo:"jpv-menu/pastry/PASTRY-WSC-RM4.png" },
+        { id:"WF4", name:"WF4 Strawberry Classic", spice:"", desc:"Strawberry Classic", price:4,
+          photo:"jpv-menu/pastry/PASTRY-WSC-RM4.png" },
+        { id:"WF5", name:"WF5 Blueberry Classic", spice:"", desc:"Blueberry Classic", price:4,
+          photo:"jpv-menu/pastry/PASTRY-WSC-RM4.png" },
+        { id:"WF6", name:"WF6 Nutella", spice:"", desc:"Nutella", price:7,
+          photo:"jpv-menu/pastry/PASTRY-WSD-RM7.png" },
+        { id:"WF7", name:"WF7 Biscoff Crunch", spice:"", desc:"Biscoff Crunch", price:7,
+          photo:"jpv-menu/pastry/PASTRY-WSD-RM7.png" },
+        { id:"WF8", name:"Wf8 Pitachio Crunch", spice:"", desc:"Pitachio Crunch", price:7,
+          photo:"jpv-menu/pastry/PASTRY-WSD-RM7.png" },
       ]
     },
     {
-      group: "Panghimagas · Desserts & Drinks",
-      tag:"",
+      group: "Minuman · Drinks",
+      tag:"quench your thirst",
       items: [
-        { id:"halohalo", name:"Halo-halo", spice:"", desc:"Ube, leche flan, sweet beans, shaved ice.", price:14,
-          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2020/05/halo-halo-2.jpg" },
-        { id:"buko", name:"Buko Pandan", spice:"", desc:"Young coconut strips, pandan jelly, cream.", price:10,
-          photo:"https://www.kawalingpinoy.com/wp-content/uploads/2019/06/buko-pandan-salad-2.jpg" },
-        { id:"sago", name:"Sago't Gulaman", spice:"", desc:"Iced brown sugar syrup, tapioca pearls, gulaman.", price:7,
-          photo:"https://www.foxyfolksy.com/wp-content/uploads/2021/07/sagot-gulaman-2.jpg" },
+        { id:"cf1h", name:"CF1 Latte Hot", spice:"", desc:"Hot Latte", price:5,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf1i", name:"CF1 Latte Iced", spice:"", desc:"Iced Latte", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf2h", name:"CF2 Hot White Coffee", spice:"", desc:"Hot White Coffee", price:5,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf2i", name:"CF2 Iced White Coffee", spice:"", desc:"Iced White Coffee", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf3h", name:"CF3 Hot Gula Melaka", spice:"", desc:"Hot Gula Melaka", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf3i", name:"CF3 Iced Gula Melaka", spice:"", desc:"Iced Hot Gula Melaka", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf4h", name:"CF4 Hot Spanish Latte", spice:"", desc:"Hot Spanish Latte", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf4i", name:"CF4 Iced Spanish Latte", spice:"", desc:"Iced Spanish Latte", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf5h", name:"CF5 Hot Butterscotch", spice:"", desc:"Hot Butterscotch", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf5i", name:"CF5 Iced Butterscotch", spice:"", desc:"Iced Butterscotch", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf6h", name:"CF6 Hot Caramel Macchiato", spice:"", desc:"Hot Caramel Macchiato", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf6i", name:"CF6 Iced Caramel Macchiato", spice:"", desc:"Iced Caramel Macchiato", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf7h", name:"CF7 Hot Salted Caramel", spice:"", desc:"Hot Salted Caramel", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf7i", name:"CF7 Iced Salted Caramel", spice:"", desc:"Iced Salted Caramel", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf8h", name:"CF8 Hot Hazelnut", spice:"", desc:"Hot Hazelnut", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf8i", name:"CF8 Iced Hazelnut", spice:"", desc:"Iced Hazelnut", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf9h", name:"CF9 Hot Mocha", spice:"", desc:"Hot Mocha", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf9i", name:"CF9 Iced Mocha", spice:"", desc:"Iced Mocha", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf10h", name:"CF10 Hot White Mocha", spice:"", desc:"Hot White Mocha", price:6,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf10i", name:"CF10 Iced White Mocha", spice:"", desc:"Iced White Mocha", price:7,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf11h", name:"CF11 Hot Pistachio", spice:"", desc:"Hot Pistachio", price:10,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"cf11i", name:"CF11 Iced Pistachio", spice:"", desc:"Iced Pistachio", price:12,
+          photo:"jpv-menu/drink/DRINK-Coffee-HotCold.png" },
+        { id:"fp1", name:"FP1 Butterscotch", spice:"", desc:"Butterscotch", price:12,
+          photo:"jpv-menu/drink/DRINK-FrappeCoffee.png" },
+        { id:"fp2", name:"FP2 Caramel", spice:"", desc:"Caramel", price:12,
+          photo:"jpv-menu/drink/DRINK-FrappeCoffee.png" },
+        { id:"fp3", name:"FP3 Salted Caramel", spice:"", desc:"Salted Caramel", price:12,
+          photo:"jpv-menu/drink/DRINK-FrappeCoffee.png" },
+        { id:"fp4", name:"FP4 Mocha", spice:"", desc:"Mocha", price:12,
+          photo:"jpv-menu/drink/DRINK-FrappeCoffee.png" },
+        { id:"fp5", name:"FP5 White Mocha", spice:"", desc:"White Mocha", price:12,
+          photo:"jpv-menu/drink/DRINK-FrappeCoffee.png" },
+        { id:"fp6", name:"FP6 Java Chip", spice:"", desc:"Java Chip", price:12,
+          photo:"jpv-menu/drink/DRINK-FrappeCoffee.png" },
+        { id:"mt1r", name:"MT1 JPV Signature Regular", spice:"", desc:"JPV Signature Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT1-JpvS-RL.png" },
+        { id:"mt1l", name:"MT1 JPV Signature Large", spice:"", desc:"JPV Signature Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT1-JpvS-RL.png" },
+        { id:"mt2r", name:"MT2 Gula Melaka Regular", spice:"", desc:"Gula Melaka Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT2-GulaM-RL.png" },
+        { id:"mt2l", name:"MT2 Gula Melaka Large", spice:"", desc:"Gula Melaka Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT2-GulaM-RL.png" },
+        { id:"mt3r", name:"MT3 Chocolate Regular", spice:"", desc:"Chocolate Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT3-Chocolate-RL.png" },
+        { id:"mt3l", name:"MT3 Chocolate Large", spice:"", desc:"Chocolate Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT3-Chocolate-RL.png" },
+        { id:"mt4r", name:"MT4 Oreo Supreme Regular", spice:"", desc:"Oreo Supreme Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT4-Oreo-RL.png" },
+        { id:"mt4l", name:"MT4 Oreo Supreme Large", spice:"", desc:"Oreo Supreme Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT4-Oreo-RL.png" },
+        { id:"mt5r", name:"MT5 Honeydew Melon Regular", spice:"", desc:"Honeydew Melon Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT5-HoneydewM-RL.png" },
+        { id:"mt5l", name:"MT5 Honeydew Melon Large", spice:"", desc:"Honeydew Melon Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT5-HoneydewM-RL.png" },
+        { id:"mt6r", name:"MT6 Taro Regular", spice:"", desc:"Taro Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT6-Taro-RL.png" },
+        { id:"mt6l", name:"MT6 Taro Large", spice:"", desc:"Taro Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT6-Taro-RL.png" },
+        { id:"mt7r", name:"MT7 Okinawa Regular", spice:"", desc:"Okinawa Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT7-Okinawa-RL.png" },
+        { id:"mt7l", name:"MT7 Okinawa Large", spice:"", desc:"Okinawa Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT7-Okinawa-RL.png" },
+        { id:"mt8r", name:"MT8 Thai Regular", spice:"", desc:"Thai Regular", price:6,
+          photo:"jpv-menu/drink/DRINK-MT8-Thai-RL.png" },
+        { id:"mt8l", name:"MT8 Thai Large", spice:"", desc:"Thai Large", price:7,
+          photo:"jpv-menu/drink/DRINK-MT8-Thai-RL.png" },
       ]
     }
   ];
@@ -1413,11 +1855,10 @@
     tabSub.textContent = `${totalItems} item${totalItems!==1?'s':''}`;
     tabTotal.textContent = MYR(totalPrice);
     waSendBtn.disabled  = totalItems === 0;
-    payNowBtn.disabled  = totalItems === 0;
     floatingCta.classList.toggle('show', totalItems > 0 && !orderTab.classList.contains('open'));
     // show empty state if all gone
     if (ids.length === 0){
-      tabItems.innerHTML = `<div class="tab-empty">Still empty.<br>Tap items on the tally board to add them here.</div>`;
+      tabItems.innerHTML = `<div class="tab-empty">Wala pay laman.<br>Tap items on the tally board to add them here.</div>`;
     }
   }
 
@@ -1434,7 +1875,7 @@
     floatingCta.classList.toggle('show', totalItems > 0 && !orderTab.classList.contains('open'));
 
     if (ids.length === 0){
-      tabItems.innerHTML = `<div class="tab-empty">Still empty.<br>Tap items on the tally board to add them here.</div>`;
+      tabItems.innerHTML = `<div class="tab-empty">Wala pay laman.<br>Tap items on the tally board to add them here.</div>`;
       return;
     }
 
@@ -1480,27 +1921,46 @@
     let total = 0;
     const lines = ids.map(id => {
       const item = findItem(id);
-      const qty = cart[id];
+      const qty  = cart[id];
       const lineTotal = item.price * qty;
       total += lineTotal;
-      return `• ${qty}x ${item.name} — ${MYR(lineTotal)}`;
+      return `  • ${qty}× ${item.name} — ${MYR(lineTotal)}`;
     });
+    // Short order reference — timestamp-based, easy for staff to match payment to order
+    const ref = 'MT-' + Date.now().toString(36).toUpperCase().slice(-5);
     const message =
-`Hi Manila Tambayan! I'd like to order:
+`🍽️ *Kabayan Tambayan Order*
+Order ref: *${ref}*
 
 ${lines.join('\n')}
 
-Total: ${MYR(total)}
+*Total: ${MYR(total)}*
 
 Name: 
 Pickup or dine-in: 
-Time: `;
+Preferred time: 
+
+---
+💳 *Payment via OCBC OneCollect DuitNow QR*
+We will reply with a DuitNow QR code for *${MYR(total)}*.
+
+*How to pay on the same phone:*
+1. Save the QR image we send to your photo gallery
+2. Open your banking app (Maybank / CIMB / RHB / TNG / GrabPay / any bank)
+3. Tap *Scan QR* or *Pay QR*
+4. Tap *Import from Gallery* (or Upload / Choose from Photos)
+5. Select the QR image — the amount *${MYR(total)}* is pre-filled
+6. Confirm and pay ✅
+
+Singapore customers: request a *PayNow QR* instead — same steps apply.
+
+We confirm your order once payment is received. Thank you! 🙏`;
 
     const url = `https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   });
 
-  // ---------------- Hours table ----------------
+  renderTab(); // initial render
   const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const todayIdx = new Date().getDay();
   const hoursTable = document.getElementById('hoursTable');
@@ -1561,7 +2021,7 @@ Time: `;
           <button class="modal-qty-btn" id="modalInc" aria-label="Increase quantity">+</button>
         </div>
         <button class="modal-add-btn" id="modalAddBtn">
-          <!--<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>-->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
           <span id="modalAddLabel">Add to tab</span>
         </button>
       </div>
@@ -1661,222 +2121,355 @@ Time: `;
   // Close on Escape
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && itemModal.classList.contains('open')) closeModal();
+    if (e.key === 'Escape') closeFeedbackModal();
   });
 
-  const payNowBtn = document.getElementById('payNowBtn');
+  // ─────────────────────────────────────────────
+  // FEEDBACK SYSTEM
+  // ─────────────────────────────────────────────
+  const FEEDBACK_KEY = 'kabayan_feedback';
+  const STAR_LABELS  = ['','Terrible','Poor','It was OK','Really good!','Excellent! 🌟'];
 
-  // ---------------- Payment modal ----------------
-  const BILLPLZ_COLLECTION_ID = 'YOUR_COLLECTION_ID'; // replace with real Billplz Collection ID
-  const BILLPLZ_API_KEY       = 'YOUR_API_KEY';        // replace — never expose in production; use a backend
+  let fbRating = 0;
+  let fbFilter = 'all';
 
-  const payModalScrim = document.getElementById('payModalScrim');
-  const payModal      = document.getElementById('payModal');
-  const payModalBody  = document.getElementById('payModalBody');
-  const payModalSub   = document.getElementById('payModalSub');
-  const billplzTotal  = document.getElementById('billplzTotal');
-  const billplzBtn    = document.getElementById('billplzBtn');
-  const waAfterPayBtn = document.getElementById('waAfterPayBtn');
-
-  // Wire Pay Now button in order tab
-  payNowBtn.addEventListener('click', openPayModal);
-
-  function buildOrderSummary(){
-    const ids = Object.keys(cart);
-    let total = 0;
-    const lines = ids.map(id => {
-      const item = findItem(id);
-      const qty  = cart[id];
-      const sub  = item.price * qty;
-      total += sub;
-      return { name: `${qty}× ${item.name}`, price: sub };
-    });
-    return { lines, total, count: ids.reduce((s,id)=>s+cart[id],0) };
+  function loadFeedback(){
+    try{ return JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function saveFeedback(arr){
+    // Cap stored reviews at 200 to prevent localStorage exhaustion
+    const capped = arr.slice(0, 200);
+    try{ localStorage.setItem(FEEDBACK_KEY, JSON.stringify(capped)); }catch(e){
+      console.warn('Voyager: localStorage write failed — storage may be full.');
+    }
   }
 
-  function openPayModal(){
-    const { lines, total, count } = buildOrderSummary();
-    if (count === 0) return;
+  let _fbScrim = null, _fbModal = null;
+  function getFbEls(){ _fbScrim=_fbScrim||document.getElementById('fbScrim'); _fbModal=_fbModal||document.getElementById('fbModal'); }
 
-    payModalSub.textContent = `${count} item${count!==1?'s':''}`;
-    billplzTotal.textContent = MYR(total);
-
-    payModalBody.innerHTML = `
-      <div style="margin-bottom:4px;">
-        ${lines.map(l=>`
-          <div class="pay-order-line">
-            <span class="name">${l.name}</span>
-            <span class="price">${MYR(l.price)}</span>
-          </div>`).join('')}
-      </div>
-      <div class="pay-divider">
-        <span class="label">Total</span>
-        <span class="total">${MYR(total)}</span>
-      </div>
-      <div class="pay-methods">
-        <div class="pay-badge"><span class="dot"></span>FPX Online Banking</div>
-        <div class="pay-badge"><span class="dot"></span>DuitNow QR</div>
-        <div class="pay-badge"><span class="dot"></span>Touch 'n Go</div>
-        <div class="pay-badge"><span class="dot"></span>GrabPay</div>
-        <div class="pay-badge"><span class="dot"></span>Boost</div>
-        <div class="pay-badge"><span class="dot"></span>ShopeePay</div>
-        <div class="pay-badge"><span class="dot"></span>Visa / MC</div>
-      </div>
-      <div class="pay-fee-note">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-        Powered by Billplz — RM0.75 flat per transaction, settled to restaurant next business day.
-      </div>
-    `;
-
-    payModalScrim.classList.add('open');
-    payModal.classList.add('open');
+  function openFeedbackModal(){
+    getFbEls();
+    const fbScrim=_fbScrim, fbModal=_fbModal;
+    if(!fbScrim || !fbModal) return;
+    fbScrim.style.display = 'block';
+    fbScrim.offsetHeight;
+    fbScrim.classList.add('open');
+    fbModal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    fbRating = 0;
+    setStars(0);
+    setTimeout(()=> fbModal && fbModal.focus(), 50);
   }
 
-  function closePayModal(){
-    payModalScrim.classList.remove('open');
-    payModal.classList.remove('open');
+  function closeFeedbackModal(){
+    getFbEls();
+    const fbScrim=_fbScrim, fbModal=_fbModal;
+    if(!fbScrim || !fbModal) return;
+    fbScrim.classList.remove('open');
+    fbModal.classList.remove('open');
     document.body.style.overflow = '';
-    // reset Billplz button back to default state
-    billplzBtn.disabled = false;
-    billplzBtn.style.background = '';
-    billplzBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> Pay <span id="billplzTotal">${MYR(Object.keys(cart).reduce((s,id)=>s+cart[id]*findItem(id).price,0))}</span> via Billplz`;
+    setTimeout(()=>{ if(fbScrim) fbScrim.style.display = 'none'; }, 320);
   }
 
-  document.getElementById('payModalClose').addEventListener('click', closePayModal);
-  payModalScrim.addEventListener('click', closePayModal);
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && payModal.classList.contains('open')) closePayModal();
+  // Bind fbScrim click after DOM is fully parsed
+  document.addEventListener('DOMContentLoaded', ()=>{
+    getFbEls();
+    if(_fbScrim) _fbScrim.addEventListener('click', closeFeedbackModal);
   });
 
-  // "Pay via Billplz" — opens Billplz payment link
-  // In production: call your backend to create a Billplz Bill via their API,
-  // then redirect to the bill URL. Here we demo the dashboard link approach.
-  billplzBtn.addEventListener('click', async () => {
-    const { lines, total } = buildOrderSummary();
+  function setStars(n){
+    fbRating = n;
+    document.querySelectorAll('.star-pick').forEach((s,i)=>{
+      s.classList.toggle('lit', i < n);
+      s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(0.25)';
+    });
+    const lbl = document.getElementById('fbStarLabel');
+    if(lbl) lbl.textContent = n ? STAR_LABELS[n] : 'Tap a star to rate';
+    const btn = document.getElementById('fbSubmitBtn');
+    if(btn) btn.disabled = n === 0;
+  }
 
-    // Disable button and show loading state
-    billplzBtn.disabled = true;
-    billplzBtn.innerHTML = `<span style="opacity:0.7">Creating payment link…</span>`;
+  function hoverStars(n){
+    document.querySelectorAll('.star-pick').forEach((s,i)=>{
+      s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(0.25)';
+    });
+  }
+  function resetHover(){
+    document.querySelectorAll('.star-pick').forEach((s,i)=>{
+      s.style.filter = i < fbRating ? 'none' : 'grayscale(1) opacity(0.25)';
+    });
+  }
 
-    // ── Check if real credentials are set ────────────────────────────────────
-    const isConfigured = BILLPLZ_COLLECTION_ID !== 'YOUR_COLLECTION_ID'
-                      && BILLPLZ_API_KEY       !== 'YOUR_API_KEY';
+  // Keyboard on stars — safe: runs after DOM is loaded
+  document.querySelectorAll('.star-pick').forEach((s,i)=>{
+    s.addEventListener('keydown', e=>{
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setStars(i+1); }
+    });
+  });
 
-    if (!isConfigured) {
-      // ── Not yet configured — show setup instructions inline ───────────────
-      billplzBtn.style.background  = 'rgba(242,163,61,0.15)';
-      billplzBtn.style.color       = 'var(--ember)';
-      billplzBtn.style.border      = '1px solid var(--ember)';
-      billplzBtn.style.borderRadius= '10px';
-      billplzBtn.style.cursor      = 'default';
-      billplzBtn.innerHTML = `
-        <div style="text-align:left; font-family:'Work Sans',sans-serif; font-size:0.82rem; line-height:1.6; padding:4px 0;">
-          <b style="font-size:0.9rem; display:block; margin-bottom:6px;">⚙️ Billplz not yet configured</b>
-          To go live, replace these two lines near the top of the &lt;script&gt;:<br><br>
-          <code style="background:rgba(0,0,0,0.2); padding:6px 10px; border-radius:6px; display:block; font-size:0.78rem; margin-bottom:6px;">
-            const BILLPLZ_COLLECTION_ID = '<b>YOUR_COLLECTION_ID</b>';<br>
-            const BILLPLZ_API_KEY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = '<b>YOUR_API_KEY</b>';
-          </code>
-          Get both from your <a href="https://billplz-sandbox.billplz.com" target="_blank" style="color:var(--ember);">Billplz Sandbox dashboard</a> → Collections.<br>
-          For production use <a href="https://www.billplz.com" target="_blank" style="color:var(--ember);">billplz.com</a> credentials instead.
-        </div>`;
+  // Post-order nudge — uses getElementById instead of closed-over variable
+  const waSendBtnEl = document.getElementById('waSendBtn');
+  if(waSendBtnEl){
+    waSendBtnEl.addEventListener('click', ()=>{
+      const nudge = document.getElementById('orderNudge');
+      if(nudge) nudge.classList.add('show');
+    });
+  }
+
+  function submitFeedback(){
+    if(fbRating === 0) return;
+    // Sanitise all user inputs before storing or transmitting
+    const name    = escHtml(document.getElementById('fbName')?.value.trim()    || 'Anonymous');
+    const dish    = escHtml(document.getElementById('fbDish')?.value            || '');
+    const comment = escHtml(document.getElementById('fbComment')?.value.trim() || '');
+    const via     = escHtml(document.getElementById('fbVia')?.value             || '');
+    const entry   = { id:'fb'+Date.now(), rating:fbRating, name, dish, comment, via, date:new Date().toISOString() };
+    const all     = loadFeedback();
+    all.unshift(entry);
+    saveFeedback(all);
+    if(fbRating >= 4 && comment){
+      const stars = '★'.repeat(fbRating)+'☆'.repeat(5-fbRating);
+      const msg =
+`⭐ *Kabayan Tambayan Review*\n\n${stars} (${fbRating}/5)\n${comment?`"${comment}"`:''}${dish?`\nDish: ${dish}`:''}${name!=='Anonymous'?`\n— ${name}`:''}${via?`\nOrdered via: ${via}`:''}`;
+      window.open('https://wa.me/'+RESTAURANT_PHONE+'?text='+encodeURIComponent(msg),'_blank');
+    }
+    closeFeedbackModal();
+    resetFeedbackForm();
+    renderTestimonials();
+    renderAvgRating();
+    showReviewThanks();
+  }
+
+  function resetFeedbackForm(){
+    setStars(0);
+    const fields = ['fbName','fbComment','fbDish','fbVia'];
+    fields.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=id==='fbVia'?'WhatsApp order':''; });
+  }
+
+  function showReviewThanks(){
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--leaf);color:var(--paper);padding:12px 20px;border-radius:999px;font-family:\'Space Mono\',monospace;font-size:0.8rem;font-weight:700;z-index:400;box-shadow:0 6px 20px rgba(0,0,0,0.4);white-space:nowrap;';
+    t.textContent = '✓ Salamat! Review saved.';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 3000);
+  }
+
+  // ── XSS SANITISER ──────────────────────────────────────────────────────
+  // Escapes all HTML-special characters before inserting user content into DOM.
+  // This prevents any customer-submitted text from executing as code.
+  function escHtml(str){
+    if(!str) return '';
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+  }
+
+  function renderTestimonials(){
+    const all      = loadFeedback();
+    const grid     = document.getElementById('testimonialGrid');
+    if(!grid) return;
+    const filtered = fbFilter==='all' ? all : all.filter(f=>f.rating >= parseInt(fbFilter));
+    if(!filtered.length){
+      grid.innerHTML=`<div class="testimonial-empty">${fbFilter==='all'?'No reviews yet — be the first to share your experience! 🍽️':'No reviews matching this filter yet.'}</div>`;
       return;
     }
+    grid.innerHTML = filtered.slice(0,12).map(f=>{
+      const starsHtml = Array.from({length:5},(_,i)=>`<span class="t-star${i>=f.rating?' empty':''}">${i<f.rating?'★':'☆'}</span>`).join('');
+      const date = new Date(f.date).toLocaleDateString('en-MY',{day:'2-digit',month:'short',year:'numeric'});
+      // All user-supplied fields are escaped to prevent XSS
+      const safeComment = escHtml(f.comment);
+      const safeName    = escHtml(f.name);
+      const safeDish    = escHtml(f.dish);
+      return `<div class="testimonial-card">
+        <div class="t-stars">${starsHtml}</div>
+        ${safeComment?`<div class="t-comment">"${safeComment}"</div>`:`<div class="t-comment" style="color:var(--paper-muted)">No comment left.</div>`}
+        <div class="t-meta">
+          <span class="t-author">— ${safeName}</span>
+          ${safeDish?`<span class="t-dish">${safeDish}</span>`:''}
+          <span class="t-date">${date}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
 
-    // ── Real Billplz API call (sandbox or production) ─────────────────────
-    // Sandbox base:    https://billplz-sandbox.billplz.com/api/v3
-    // Production base: https://www.billplz.com/api/v3
-    const isSandbox  = BILLPLZ_API_KEY.startsWith('sandbox-');
-    const apiBase    = isSandbox
-      ? 'https://billplz-sandbox.billplz.com/api/v3'
-      : 'https://www.billplz.com/api/v3';
+  function renderAvgRating(){
+    const all     = loadFeedback();
+    const scoreEl = document.getElementById('avgScore');
+    const starsEl = document.getElementById('avgStars');
+    const metaEl  = document.getElementById('avgMeta');
+    if(!scoreEl||!starsEl||!metaEl) return;
+    if(!all.length){ scoreEl.textContent='—'; starsEl.innerHTML=''; metaEl.textContent='No reviews yet'; return; }
+    const avg = all.reduce((s,f)=>s+f.rating,0)/all.length;
+    const filled = Math.round(avg);
+    scoreEl.textContent = avg.toFixed(1);
+    starsEl.innerHTML   = Array.from({length:5},(_,i)=>`<span style="color:${i<filled?'var(--ember)':'rgba(232,220,200,0.2)'}">${i<filled?'★':'☆'}</span>`).join('');
+    metaEl.textContent  = `${all.length} review${all.length!==1?'s':''}`;
+  }
 
-    const description = 'Manila Tambayan: ' + lines.map(l => l.name).join(', ');
-    const amountCents = total * 100; // Billplz uses cents (sen)
+  function filterFeedback(val, btn){
+    fbFilter = val;
+    document.querySelectorAll('.rating-chip').forEach(c=>c.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    renderTestimonials();
+  }
 
-    try {
-      const res = await fetch(`${apiBase}/bills`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + btoa(BILLPLZ_API_KEY + ':')
-        },
-        body: JSON.stringify({
-          collection_id: BILLPLZ_COLLECTION_ID,
-          description:   description,
-          email:         'customer@order.com',  // replace with customer input if collected
-          name:          'Manila Tambayan Customer',
-          amount:        amountCents,
-          callback_url:  window.location.href,  // Billplz pings here on payment
-          redirect_url:  window.location.href   // customer returns here after paying
-        })
+  // FAB scroll show
+  window.addEventListener('scroll', ()=>{
+    const fab = document.getElementById('feedbackFab');
+    if(fab) fab.classList.toggle('show', window.scrollY > 600);
+  }, {passive:true});
+
+  // ── CATEGORY NAV ──────────────────────────────────────────────────────
+
+  const menuCatNav  = document.getElementById('menuCatNav');
+  const menuSection = document.getElementById('menu');
+
+  // Helper: total height of fixed bars above content
+  function fixedOffset(){
+    const topbarH  = document.querySelector('.topbar')?.offsetHeight || 48;
+    const catNavH  = menuCatNav?.offsetHeight || 0;
+    return topbarH + catNavH + 32; // 32px breathing room — keeps group header clear of nav bar
+  }
+
+  // Show nav when menu section is in view; hide when above or below it
+  function updateCatNavVisibility(){
+    if(!menuSection || !menuCatNav) return;
+    const rect = menuSection.getBoundingClientRect();
+    const topbarH = document.querySelector('.topbar')?.offsetHeight || 48;
+    // Show when top of menu has scrolled past the topbar, and menu bottom is still visible
+    const shouldShow = rect.top <= topbarH && rect.bottom > topbarH + 60;
+    menuCatNav.classList.toggle('visible', shouldShow);
+  }
+
+  window.addEventListener('scroll', updateCatNavVisibility, { passive:true });
+  window.addEventListener('resize', updateCatNavVisibility, { passive:true });
+  updateCatNavVisibility(); // run once on load
+
+  // Scroll to a group: target group stops just below the fixed bars
+  function scrollToGroup(groupName, btn){
+    const safeId = 'cards-' + groupName.replace(/\W+/g,'_');
+    const target  = document.getElementById(safeId);
+    if(!target) return;
+    const offset = fixedOffset();
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior:'smooth' });
+    setActivePill(btn);
+  }
+
+  function setActivePill(activeBtn){
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    if(activeBtn) activeBtn.classList.add('active');
+  }
+
+  // Scroll-spy: light up the correct pill as user scrolls freely
+  function initCatScrollSpy(){
+    const MENU_GROUPS = [
+      'Makanan · Meal',
+      'Snek · Snacks',
+      'Pastri · Pastries',
+      'Minuman · Drinks',
+    ];
+    const offset = fixedOffset();
+
+    const spyObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(!entry.isIntersecting) return;
+        const id = entry.target.id;
+        const matchedGroup = MENU_GROUPS.find(g =>
+          id === 'cards-' + g.replace(/\W+/g,'_')
+        );
+        if(!matchedGroup) return;
+        const pill = document.querySelector(`.cat-pill[data-cat="${matchedGroup}"]`);
+        setActivePill(pill);
+        // Keep active pill in view inside the nav bar
+        if(pill && menuCatNav){
+          pill.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+        }
       });
+    }, {
+      rootMargin: `-${offset}px 0px -50% 0px`,
+      threshold: 0
+    });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err?.error?.message || `HTTP ${res.status}`);
-      }
+    MENU_GROUPS.forEach(g => {
+      const el = document.getElementById('cards-' + g.replace(/\W+/g,'_'));
+      if(el) spyObserver.observe(el);
+    });
+  }
 
-      const bill = await res.json();
-      // bill.url is the hosted Billplz payment page
-      window.open(bill.url, '_blank');
+  setTimeout(initCatScrollSpy, 120);
 
-      billplzBtn.style.background = 'var(--leaf)';
-      billplzBtn.style.color      = 'var(--paper)';
-      billplzBtn.style.border     = 'none';
-      billplzBtn.innerHTML = `✓ Payment page opened — send order to WhatsApp below`;
-
-    } catch (err) {
-      // Show error clearly so the owner knows what went wrong
-      billplzBtn.disabled          = false;
-      billplzBtn.style.background  = 'rgba(196,69,36,0.15)';
-      billplzBtn.style.color       = '#C44524';
-      billplzBtn.style.border      = '1px solid rgba(196,69,36,0.4)';
-      billplzBtn.style.borderRadius= '10px';
-      billplzBtn.innerHTML = `
-        <div style="text-align:left; font-family:'Work Sans',sans-serif; font-size:0.82rem; line-height:1.6; padding:4px 0;">
-          <b style="display:block; margin-bottom:4px;">⚠️ Billplz error — ${err.message}</b>
-          Check that your Collection ID and API Key are correct, and that the Collection is active in your Billplz dashboard.
-          <span style="display:block; margin-top:6px; font-size:0.76rem; opacity:0.7;">Tap to try again</span>
-        </div>`;
-      // Restore button on next click
-      billplzBtn.addEventListener('click', () => {
-        billplzBtn.style.cssText = '';
-        billplzBtn.innerHTML = `Pay ${MYR(total)} via Billplz`;
-      }, { once: true });
-    }
-  });
-
-  // "Already paid? Send to WhatsApp" — fires WA with payment note
-  waAfterPayBtn.addEventListener('click', () => {
-    const { lines, total } = buildOrderSummary();
-    const lineText = lines.map(l=>`• ${l.name} — ${MYR(l.price)}`).join('\n');
-    const message =
-`Hi Manila Tambayan! I've paid via Billplz and would like to confirm my order:
-
-${lineText}
-
-Total paid: ${MYR(total)}
-
-Billplz reference / transaction ID: ___________
-Name: 
-Pickup or dine-in: 
-Time: `;
-    const url = `https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-    closePayModal();
-  });
-
-  // Enable payNowBtn alongside waSendBtn (patch renderTab)
-  const _origRenderTab = renderTab;
-  renderTab = function(){
-    _origRenderTab();
-    const hasItems = Object.keys(cart).length > 0;
-    payNowBtn.disabled = !hasItems;
-  };
-
-  renderTab(); // initial render
+  // ── BOOT feedback ────────────────────────────────────────────────────
+  renderTestimonials();
+  renderAvgRating();
 
 </script>
+
+<!-- Feedback Modal -->
+<div class="fb-scrim" id="fbScrim" style="display:none;"></div>
+<div class="fb-modal" id="fbModal" role="dialog" aria-modal="true" aria-label="Leave a review" tabindex="-1">
+  <div class="fb-handle"></div>
+  <div class="fb-head">
+    <div>
+      <h3>Leave a review</h3>
+      <div class="sub">Kabayan Tambayan · Johor Bahru</div>
+    </div>
+    <button class="fb-close" onclick="closeFeedbackModal()" aria-label="Close">✕</button>
+  </div>
+  <div class="fb-body">
+    <div style="margin-bottom:6px;font-size:0.8rem;font-weight:600;color:#3a2e22;text-align:center;">Your overall rating</div>
+    <div class="star-picker" role="group" aria-label="Rating">
+      <span class="star-pick" onclick="setStars(1)" onmouseover="hoverStars(1)" onmouseout="resetHover()" role="radio" aria-label="1 star" tabindex="0">★</span>
+      <span class="star-pick" onclick="setStars(2)" onmouseover="hoverStars(2)" onmouseout="resetHover()" role="radio" aria-label="2 stars" tabindex="0">★</span>
+      <span class="star-pick" onclick="setStars(3)" onmouseover="hoverStars(3)" onmouseout="resetHover()" role="radio" aria-label="3 stars" tabindex="0">★</span>
+      <span class="star-pick" onclick="setStars(4)" onmouseover="hoverStars(4)" onmouseout="resetHover()" role="radio" aria-label="4 stars" tabindex="0">★</span>
+      <span class="star-pick" onclick="setStars(5)" onmouseover="hoverStars(5)" onmouseout="resetHover()" role="radio" aria-label="5 stars" tabindex="0">★</span>
+    </div>
+    <div id="fbStarLabel" style="text-align:center;font-size:0.82rem;color:#6b5d4a;margin:-8px 0 16px;min-height:20px;font-style:italic;">Tap a star to rate</div>
+    <div class="fb-field">
+      <label class="fb-label">Which dish did you try? (optional)</label>
+      <select class="fb-select" id="fbDish">
+        <option value="">— Select a dish —</option>
+        <option>Toast</option><option>Sizzling Chicken Sisig</option>
+        <option>Crispy Fried Chicken</option><option>Chicken Afritada</option>
+        <option>Beef Kaldereta</option><option>Sinigang na Isda</option>
+        <option>Bulalo</option><option>Kare-Kare</option>
+        <option>Lumpiang Shanghai</option><option>Pancit Bihon</option>
+        <option>Tortang Talong</option><option>Halo-halo</option>
+        <option>Buko Pandan</option><option>Sago't Gulaman</option>
+        <option>Multiple dishes</option>
+      </select>
+    </div>
+    <div class="fb-field">
+      <label class="fb-label">Your review (optional but appreciated)</label>
+      <textarea class="fb-textarea" id="fbComment" placeholder="What did you love? What can we improve? Every word helps us cook better for you…"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fb-field">
+        <label class="fb-label">Your name (optional)</label>
+        <input class="fb-input" id="fbName" placeholder="e.g. Maria">
+      </div>
+      <div class="fb-field">
+        <label class="fb-label">How did you order?</label>
+        <select class="fb-select" id="fbVia">
+          <option>WhatsApp order</option>
+          <option>Dine-in</option>
+          <option>Takeaway / pickup</option>
+          <option>First visit</option>
+        </select>
+      </div>
+    </div>
+    <p style="font-size:0.74rem;color:#8a7c66;line-height:1.55;margin-bottom:16px;">Your review will be displayed on this page to help other customers. By submitting, you consent to your first name and review being shown publicly in accordance with our <a href="#legal" style="color:var(--annatto);text-decoration:none;" onclick="closeFeedbackModal()">Privacy Policy</a>. Reviews with 4–5 stars and a comment are also forwarded to our WhatsApp so we can personally thank you.</p>
+  </div>
+  <div class="fb-foot">
+    <button class="fb-submit" id="fbSubmitBtn" onclick="submitFeedback()" disabled>★ Submit review</button>
+    <div class="fb-hint">Your honest feedback — good or bad — helps a small Filipino family kitchen serve JB better.</div>
+  </div>
+</div>
+
 </body>
 </html>
