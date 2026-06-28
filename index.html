@@ -969,7 +969,7 @@
     position:fixed;
     bottom:max(10px, calc(env(safe-area-inset-bottom,0px) + 10px));
     left:16px; z-index:60;
-    background:var(--green-deep); color:var(--paper);
+    background:#229116; color:var(--paper);
     border:1px solid var(--green-deeper); border-radius:999px;
     padding:4px 8px;
     font-family:'Space Mono',monospace; font-weight:700; font-size:0.72rem;
@@ -979,7 +979,7 @@
     opacity:0; pointer-events:none; touch-action:manipulation;
   }
   .feedback-fab.show{opacity:1; pointer-events:auto;}
-  .feedback-fab:hover{background:var(--green); color:var(--paper); transform:translateY(-2px);}
+  .feedback-fab:hover{background:#16db00; color:var(--green-deep); transform:translateY(-2px);}
 
   /* Feedback modal */
   .fb-scrim{
@@ -990,7 +990,7 @@
   .fb-scrim.open{background:rgba(0,0,0,0.75); pointer-events:auto; display:block;}
   .fb-modal{
     position:fixed; bottom:0; left:0; right:0; z-index:311;
-    background:var(--paper); color:var(--char);
+    background:var(--paper); color:var(--gold);
     border-radius:20px 20px 0 0;
     transform:translateY(100%);
     transition:transform 0.36s cubic-bezier(.2,.9,.25,1);
@@ -1025,9 +1025,9 @@
   .fb-body{overflow-y:auto; flex:1; padding:16px 20px 0; -webkit-overflow-scrolling:touch;}
   .star-picker{display:flex; gap:8px; justify-content:center; margin:6px 0 14px;}
   .star-pick{
-    font-size:2.2rem; cursor:pointer; line-height:1;
+    font-size:3rem; cursor:pointer; line-height:1;
     transition:transform 0.15s ease; user-select:none;
-    filter:grayscale(1) opacity(0.25); touch-action:manipulation;
+    filter:grayscale(1) opacity(0.75); touch-action:manipulation;
   }
   .star-pick.lit{filter:none;}
   .star-pick:hover{transform:scale(1.2);}
@@ -1049,13 +1049,13 @@
   }
   .fb-submit{
     width:100%; padding:13px;
-    background:var(--annatto); color:var(--paper);
+    background:#229116; color:var(--paper);
     border:none; border-radius:9px;
     font-family:'Space Mono',monospace; font-size:0.82rem; font-weight:700;
     cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
     transition:background 0.15s, transform 0.15s; touch-action:manipulation;
   }
-  .fb-submit:hover{background:var(--annatto-deep); transform:translateY(-1px);}
+  .fb-submit:hover{background:#195710; transform:translateY(-1px);}
   .fb-submit:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
   .fb-hint{font-size:0.7rem; color:#8a7c66; margin-top:8px; text-align:center; line-height:1.5;}
   .order-nudge{
@@ -2198,7 +2198,7 @@ We confirm your order once payment is received. Thank you! 🙏`;
   // FEEDBACK SYSTEM
   // ─────────────────────────────────────────────
   const FEEDBACK_KEY = 'kabayan_feedback';
-  const STAR_LABELS  = ['','Terrible','Poor','It was OK','Really good!','Excellent! 🌟'];
+  const STAR_LABELS  = ['','Terrible 😥','Poor 👎','It was OK 👍','Really good! 👏','Excellent! 🏆'];
 
   let fbRating = 0;
   let fbFilter = 'all';
@@ -2252,7 +2252,7 @@ We confirm your order once payment is received. Thank you! 🙏`;
     fbRating = n;
     document.querySelectorAll('.star-pick').forEach((s,i)=>{
       s.classList.toggle('lit', i < n);
-      s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(0.25)';
+      s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(0.75)';
     });
     const lbl = document.getElementById('fbStarLabel');
     if(lbl) lbl.textContent = n ? STAR_LABELS[n] : 'Tap a star to rate';
@@ -2262,12 +2262,12 @@ We confirm your order once payment is received. Thank you! 🙏`;
 
   function hoverStars(n){
     document.querySelectorAll('.star-pick').forEach((s,i)=>{
-      s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(0.25)';
+      s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(0.75)';
     });
   }
   function resetHover(){
     document.querySelectorAll('.star-pick').forEach((s,i)=>{
-      s.style.filter = i < fbRating ? 'none' : 'grayscale(1) opacity(0.25)';
+      s.style.filter = i < fbRating ? 'none' : 'grayscale(1) opacity(0.75)';
     });
   }
 
@@ -2499,7 +2499,7 @@ We confirm your order once payment is received. Thank you! 🙏`;
       <span class="star-pick" onclick="setStars(4)" onmouseover="hoverStars(4)" onmouseout="resetHover()" role="radio" aria-label="4 stars" tabindex="0">★</span>
       <span class="star-pick" onclick="setStars(5)" onmouseover="hoverStars(5)" onmouseout="resetHover()" role="radio" aria-label="5 stars" tabindex="0">★</span>
     </div>
-    <div id="fbStarLabel" style="text-align:center;font-size:0.82rem;color:#6b5d4a;margin:-8px 0 16px;min-height:20px;font-style:italic;">Tap a star to rate</div>
+    <div id="fbStarLabel" style="text-align:center;font-size:0.98rem;color:#F0E6D0;margin:-8px 0 16px;min-height:20px;font-style:italic; margin: -8px 0 16px; min-height: 20px; background: #241a14; padding: 8px; border-radius: 20px;">Tap a star to rate</div>
     <div class="fb-field">
       <label class="fb-label">Which dish did you try? (optional)</label>
       <select class="fb-select" id="fbDish">
